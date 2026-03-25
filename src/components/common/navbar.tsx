@@ -118,7 +118,7 @@ export default function Header() {
                       <p className="text-sm font-medium">{(user as any)?.name}</p>
                       <p className="text-xs text-[var(--ink-faint)]">{(user as any)?.email}</p>
                     </div>
-                    <DropdownMenuItem asChild>
+                    <DropdownMenuItem  asChild>
                       <Link href="/profile" className="flex items-center gap-2 cursor-pointer">
                         <User className="w-4 h-4" /> My Profile
                       </Link>
@@ -154,7 +154,7 @@ export default function Header() {
                 <Link href="/register">
                   <Button
                     size="sm"
-                    className="bg-[var(--forest)] hover:bg-[var(--forest-light)] text-white rounded-lg"
+                    className="bg-[var(--forest)] cursor-pointer hover:bg-[var(--forest-light)] text-white rounded-lg"
                   >
                     Get Started
                   </Button>

@@ -1,13 +1,10 @@
 import React from 'react';
-import PageBanner from '../../components/common/banner'
-import AboutSection from '@/components/common/about';
+import PageBanner from '@/components/common/banner'
 import ContactSection from '@/components/common/contact';
-
 const page = () => {
     return (
         <div>
-            <PageBanner title="About" />
-            <AboutSection/>
+            <PageBanner title="Contact Us"/>
             <ContactSection/>
         </div>
     );
