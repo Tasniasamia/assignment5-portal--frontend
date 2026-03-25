@@ -11,7 +11,11 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { ApiErrorResponse } from "@/types/api.types";
-import { ILoginPayloadType,  IRegisterPayloadType, IRegisterResponse } from "@/types/auth.types";
+import {
+  ILoginPayloadType,
+  IRegisterPayloadType,
+  IRegisterResponse,
+} from "@/types/auth.types";
 import { authValidationSchema } from "@/zod/auth.validation";
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -38,7 +42,7 @@ const RegisterForm = () => {
 
   const form = useForm({
     defaultValues: {
-      name:"",
+      name: "",
       email: "",
       password: "",
     },
@@ -46,13 +50,13 @@ const RegisterForm = () => {
       try {
         setServerError(null);
         const registerResponse: any = await mutateAsync(value as any);
-
+        console.log("registerResponse",registerResponse);
         if (!registerResponse.success) {
- 
+
           setServerError(registerResponse?.message);
           return;
-        }  
-        toast.success('Please verify your email');
+        }
+        toast.success("Please verify your email");
       } catch (error: any) {
         setServerError(error?.message);
       }
@@ -60,13 +64,13 @@ const RegisterForm = () => {
   });
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <Card className="w-full max-w-md shadow-lg rounded-2xl">
+      <Card className="w-full max-w-md shadow-xl border-white rounded-2xl">
         <CardHeader>
           <h1 className="text-3xl font-bold text-center text-gray-800 mt-2">
             Welcome Back 👋
           </h1>
           <p className="text-center text-gray-500 text-sm mt-1">
-            Please create  your account
+            Please create your account
           </p>
         </CardHeader>
 
@@ -82,7 +86,7 @@ const RegisterForm = () => {
             }}
             className="space-y-4"
           >
-                 <form.Field
+            <form.Field
               name="name"
               validators={{
                 onChange: authValidationSchema.registerSchema.shape.name,
@@ -142,8 +146,8 @@ const RegisterForm = () => {
                     className="p-3"
                     // disabled
                     append={
-                        <Button
-                        type="button"  
+                      <Button
+                        type="button"
                         variant="ghost"
                         size="icon"
                         className="cursor-pointer"
@@ -160,11 +164,10 @@ const RegisterForm = () => {
                 );
               }}
             />
-    
 
             {serverError && (
               <Alert>
-                <AlertDescription>{serverError}</AlertDescription>
+                <AlertDescription className="mx-4">{serverError}</AlertDescription>
               </Alert>
             )}
 
@@ -173,7 +176,9 @@ const RegisterForm = () => {
               children={([canSubmit, isSubmitting]) => (
                 <>
                   <AppSubmitButton
-                    isPending={isSubmitting || isPending} pendingLabel="Creating User ..."
+                    className="w-full bg-[var(--forest)] text-white "
+                    isPending={isSubmitting || isPending}
+                    pendingLabel="Creating User ..."
                     disabled={!canSubmit}
                   >
                     Register
@@ -183,18 +188,17 @@ const RegisterForm = () => {
             />
           </form>
           <Button
-          variant="outline"
-          className="w-full my-4 cursor-pointer"
-          onClick={() => {
-            window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login/google`;
+            variant="outline"
+            className="w-full my-4 cursor-pointer"
+            onClick={() => {
+              window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login/google`;
 
-            // window.location.href=`http://localhost:5050/api/v1/auth/login/google`
-          }}
-        >
-          Sign Up With Google
-        </Button>
+            }}
+          >
+            Sign Up With Google
+          </Button>
         </CardContent>
- 
+
         <CardFooter className="justify-center pb-5">
           <p className="text-sm text-gray-500">
             Aready have an account?{" "}
