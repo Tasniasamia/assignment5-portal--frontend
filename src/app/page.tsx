@@ -1,65 +1,125 @@
+import Link from "next/link";
 import Image from "next/image";
+import {
+  Search,
+  ArrowRight,
+  Leaf,
+  Zap,
+  Recycle,
+  Car,
+  Droplets,
+  Sprout,
+  ChevronRight,
+  Star,
+  TrendingUp,
+  Users,
+  Lightbulb,
+  ThumbsUp,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+// import IdeaCard from "@/components/shared/IdeaCard";
+import Hero from "@/components/modules/home/hero";
+import AboutSection from "@/components/common/about";
+import ServicesSection from "@/components/common/service";
+import ContactSection from "@/components/common/contact";
 
-export default function Home() {
+// Demo data — replace with actual API calls
+const featuredIdeas = [
+  {
+    id: "1",
+    title: "Solar-Powered Community Water Purification System",
+    description:
+      "Installing solar-powered water purification units in rural communities to provide clean drinking water without electricity costs.",
+    images: [],
+    type: "FREE" as const,
+    category: { name: "Energy" },
+    author: { name: "Rahim Khan" },
+    _count: { votes: 142, comments: 38 },
+    viewCount: 1240,
+    userVote: null,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "2",
+    title: "Zero-Waste Marketplace for Local Farmers",
+    description:
+      "An online platform connecting local farmers directly with consumers, reducing packaging waste and transportation emissions.",
+    images: [],
+    type: "PAID" as const,
+    price: 99,
+    category: { name: "Waste" },
+    author: { name: "Sumaiya Ahmed" },
+    _count: { votes: 98, comments: 21 },
+    viewCount: 876,
+    userVote: null,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "3",
+    title: "Electric Rickshaw Sharing Network",
+    description:
+      "A city-wide electric rickshaw sharing program to reduce carbon emissions from last-mile transportation in urban areas.",
+    images: [],
+    type: "FREE" as const,
+    category: { name: "Transportation" },
+    author: { name: "Farhan Hossain" },
+    _count: { votes: 211, comments: 54 },
+    viewCount: 2100,
+    userVote: null,
+    createdAt: new Date().toISOString(),
+  },
+];
+
+const topVotedIdeas = [
+  {
+    id: "4",
+    title: "Rooftop Rain Harvesting Grid",
+    votes: 311,
+    category: "Water",
+    author: "Nadia Islam",
+  },
+  {
+    id: "1",
+    title: "Solar-Powered Water Purification",
+    votes: 142,
+    category: "Energy",
+    author: "Rahim Khan",
+  },
+  {
+    id: "3",
+    title: "Electric Rickshaw Sharing Network",
+    votes: 211,
+    category: "Transportation",
+    author: "Farhan Hossain",
+  },
+];
+
+const stats = [
+  { label: "Ideas Shared", value: "1,240+", icon: Lightbulb },
+  { label: "Active Members", value: "8,400+", icon: Users },
+  { label: "Votes Cast", value: "32K+", icon: TrendingUp },
+  { label: "Categories", value: "12", icon: Leaf },
+];
+
+const categories = [
+  { name: "Energy", icon: Zap, color: "bg-amber-50 text-amber-600 border-amber-200" },
+  { name: "Waste", icon: Recycle, color: "bg-green-50 text-green-600 border-green-200" },
+  { name: "Transportation", icon: Car, color: "bg-blue-50 text-blue-600 border-blue-200" },
+  { name: "Water", icon: Droplets, color: "bg-cyan-50 text-cyan-600 border-cyan-200" },
+  { name: "Agriculture", icon: Sprout, color: "bg-lime-50 text-lime-600 border-lime-200" },
+  { name: "Community", icon: Users, color: "bg-purple-50 text-purple-600 border-purple-200" },
+];
+
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <main className="min-h-screen w-full bg-[var(--cream)]">
+      {/* ── Hero ── */}
+<Hero/>
+<AboutSection/>
+<ServicesSection/>
+<ContactSection/>
+      
+    </main>
   );
 }
