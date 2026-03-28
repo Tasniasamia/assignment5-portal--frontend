@@ -1,4 +1,4 @@
-import z from "zod";
+import z, { email } from "zod";
 
 const loginSchema = z.object({
     email: z
@@ -25,4 +25,23 @@ const registerSchema = z.object({
         .max(20, "Maximum length can be 20 characters")
         .nonempty("Password is required"),
 });
-export const authValidationSchema = {loginSchema ,registerSchema};
+
+const verifyEmailWithOtpSchema = z.object({
+       email: z
+        .string()
+        .email("Invalid email address")
+        .nonempty("Email is required"),
+        otp: z.string().length(6, "OTP must be 6 digits")
+});
+
+const resendOTPSchema=z.object({
+         email: z
+        .string()
+        .email("Invalid email address")
+        .nonempty("Email is required"),
+        type:z.string()
+})
+
+
+
+export const authValidationSchema = {loginSchema ,registerSchema,verifyEmailWithOtpSchema,resendOTPSchema};

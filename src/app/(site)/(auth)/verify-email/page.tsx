@@ -1,11 +1,16 @@
-import React from 'react';
+import React from "react";
+import VerifyOtpForm from "@/components/modules/auth/verifyOtpForm";
 
-const VerifyEmail = () => {
-    return (
-        <div>
-            
-        </div>
-    );
-};
-
-export default VerifyEmail;
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const searchQueries = await searchParams;
+  
+  return (
+    <div>
+      <VerifyOtpForm email={searchQueries.email as string} />
+    </div>
+  );
+}

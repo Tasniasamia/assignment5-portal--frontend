@@ -1,5 +1,9 @@
 'use server'
+import { httpClient } from "@/lib/axios/httpClient";
 import { verifyToken } from "@/lib/jwtUtils";
+import { ApiErrorResponse } from "@/types/api.types";
+import { TResendOTPResponse, TVerifyResponse } from "@/types/auth.types";
+import { authValidationSchema } from "@/zod/auth.validation";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
@@ -114,3 +118,56 @@ export async function getUserInfoMiddleware(req: NextRequest) {
       return null;
   }
 }
+
+export const verifyOtpWithEmailAction = async (payload: {email:string,otp:string}):Promise<TVerifyResponse|ApiErrorResponse> => {
+  try {
+    const parsePayload: any =
+      authValidationSchema.verifyEmailWithOtpSchema.safeParse(payload);
+    if (!parsePayload) {
+      return {
+        success: false,
+        message: `zod validation error. ${parsePayload?.error}`,
+      };
+    }
+    const response = await httpClient.post<TVerifyResponse>(
+      "/auth/verify-email",
+      payload
+    );
+    const { success , message, data } = await response.data;
+      console.log("responsedata",response?.data)
+    
+    return {...response};
+  } catch (error: any) {
+    return {
+      success: false,
+      message: `Email Verification Failed: ${error?.message}`,
+    };
+  }
+};
+
+export const resendOTP = async (payload: {email:string,type:string}):Promise<TResendOTPResponse|ApiErrorResponse> => {
+  try {
+    const parsePayload: any =
+      authValidationSchema.resendOTPSchema.safeParse(payload);
+    if (!parsePayload) {
+      return {
+        success: false,
+        message: `zod validation error. ${parsePayload?.error}`,
+      };
+    }
+    const response = await httpClient.post<TResendOTPResponse>(
+      "/auth/resend-otp",
+      payload
+    );
+    console.log("response",response);
+    const { success , message, data } = await response.data;
+      console.log("responsedata",response?.data)
+    
+    return {...response};
+  } catch (error: any) {
+    return {
+      success: false,
+      message: `Resend OTP failed: ${error?.message}`,
+    };
+  }
+};

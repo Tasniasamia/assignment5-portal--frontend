@@ -21,6 +21,7 @@ import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -39,6 +40,7 @@ const RegisterForm = () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
   });
+  const router = useRouter();
 
   const form = useForm({
     defaultValues: {
@@ -50,15 +52,16 @@ const RegisterForm = () => {
       try {
         setServerError(null);
         const registerResponse: any = await mutateAsync(value as any);
-        console.log("registerResponse",registerResponse);
+        console.log("registerResponse", registerResponse);
         if (!registerResponse.success) {
-
-          setServerError(registerResponse?.message);
+          toast.error(registerResponse?.message);
           return;
         }
+        router.push(`/verify-email?email=${value?.email}`);
+
         toast.success("Please verify your email");
       } catch (error: any) {
-        setServerError(error?.message);
+        toast.success(error?.message);
       }
     },
   });
@@ -167,7 +170,9 @@ const RegisterForm = () => {
 
             {serverError && (
               <Alert>
-                <AlertDescription className="mx-4">{serverError}</AlertDescription>
+                <AlertDescription className="mx-4">
+                  {serverError}
+                </AlertDescription>
               </Alert>
             )}
 
@@ -192,7 +197,6 @@ const RegisterForm = () => {
             className="w-full my-4 cursor-pointer"
             onClick={() => {
               window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login/google`;
-
             }}
           >
             Sign Up With Google

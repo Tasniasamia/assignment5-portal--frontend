@@ -19,8 +19,8 @@ import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
 
-const LoginForm = ({redirect}:{redirect?:string|object}) => {
-  console.log("redirect",redirect);
+const LoginForm = ({ redirect }: { redirect?: string | object }) => {
+  console.log("redirect", redirect);
   const queryClient = useQueryClient();
   const [serverError, setServerError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -30,7 +30,8 @@ const LoginForm = ({redirect}:{redirect?:string|object}) => {
     Error,
     ILoginPayloadType
   >({
-    mutationFn: (values: ILoginPayloadType) => createLoginAction(values,redirect as string),
+    mutationFn: (values: ILoginPayloadType) =>
+      createLoginAction(values, redirect as string),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
@@ -55,7 +56,10 @@ const LoginForm = ({redirect}:{redirect?:string|object}) => {
       } catch (error: unknown) {
         if (error && typeof error === "object" && "message" in error) {
           console.log("catch message", (error as { message?: string }).message);
-          setServerError((error as { message?: string }).message ?? "An unexpected error occurred");
+          setServerError(
+            (error as { message?: string }).message ??
+              "An unexpected error occurred",
+          );
         } else {
           console.log("catch message", error);
           setServerError("An unexpected error occurred");
@@ -112,13 +116,11 @@ const LoginForm = ({redirect}:{redirect?:string|object}) => {
               {(field) => (
                 <AppField
                   field={field}
-                  aria-label={
-                    showPassword ? "Show Password" : "Hide Password"
-                  }
+                  className="p-3"
+                  aria-label={showPassword ? "Show Password" : "Hide Password"}
                   label="Password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
-                  className="p-3"
                   append={
                     <Button
                       type="button"
@@ -155,12 +157,15 @@ const LoginForm = ({redirect}:{redirect?:string|object}) => {
 
             <form.Subscribe
               selector={(state) => [state.canSubmit, state.isSubmitting]}
+
             >
               {([canSubmit, isSubmitting]) => (
                 <AppSubmitButton
                   isPending={isSubmitting || isPending}
                   pendingLabel="Logging In ..."
                   disabled={!canSubmit}
+                    className="w-full bg-[var(--forest)] text-white "
+
                 >
                   Login
                 </AppSubmitButton>
@@ -168,18 +173,18 @@ const LoginForm = ({redirect}:{redirect?:string|object}) => {
             </form.Subscribe>
           </form>
           <Button
-          variant="outline"
-          className="w-full my-4 cursor-pointer"
-          onClick={() => {
-            window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login/google`;
+            variant="outline"
+            className="w-full my-4 cursor-pointer"
+            onClick={() => {
+              window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login/google`;
 
-            // window.location.href=`http://localhost:5050/api/v1/auth/login/google`
-          }}
-        >
-          Sign In With Google
-        </Button>
+              // window.location.href=`http://localhost:5050/api/v1/auth/login/google`
+            }}
+          >
+            Sign In With Google
+          </Button>
         </CardContent>
- 
+
         <CardFooter className="justify-center pb-5">
           <p className="text-sm text-gray-500">
             Don&apos;t have an account?{" "}

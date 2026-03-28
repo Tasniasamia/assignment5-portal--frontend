@@ -55,3 +55,5 @@ export interface IPatient {
   }
 
   export type IRegisterPayloadType=z.infer<typeof authValidationSchema.registerSchema>
+export type TVerifyResponse = {message:string,success:boolean,data:null|[]}
+export type TResendOTPResponse = {message:string,success:boolean,data:null|[]}
