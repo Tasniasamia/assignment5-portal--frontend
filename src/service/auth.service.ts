@@ -30,6 +30,7 @@ export const getNewTokens = async (refreshToken: string) => {
   }
 };
 
+
 export async function getUserInfo() {
   try {
     const cookieStore = await cookies();
@@ -55,17 +56,18 @@ export async function getUserInfo() {
       .map((c) => `${c.name}=${c.value}`)
       .join("; ");
 
-    const res = await fetch(
+    const res:any = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/me`,
       {
         method: "GET",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
           Cookie: cookieHeader,
         },
       }
     );
-    // console.log("res", res);
+    console.log("res", res);
 
     if (!res.ok) {
       console.error(
@@ -77,7 +79,7 @@ export async function getUserInfo() {
     }
 
     const { data } = await res.json();
-    // console.log("data", data);
+    console.log("getUserInfo data", data);
 
     return data;
   } catch (error) {
@@ -86,6 +88,8 @@ export async function getUserInfo() {
   }
 }
 // auth.service.ts
+
+
 export async function getUserInfoMiddleware(req: NextRequest) {
   try {
       const accessToken = req.cookies.get("accessToken")?.value;

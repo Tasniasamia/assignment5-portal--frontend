@@ -8,7 +8,7 @@ import { getNewTokens, getUserInfoMiddleware } from "./service/auth.service";
 const setTokenCookies = (response: NextResponse, tokenData: { accessToken: string; refreshToken: string; sessionToken: string }) => {
   response.cookies.set("accessToken", tokenData.accessToken, { httpOnly: true, path: "/", sameSite: "strict" });
   response.cookies.set("refreshToken", tokenData.refreshToken, { httpOnly: true, path: "/", sameSite: "strict" });
-  response.cookies.set("sessionToken", tokenData.sessionToken, { httpOnly: true, path: "/", sameSite: "strict" });
+  response.cookies.set("better-auth.session_token", tokenData.sessionToken, { httpOnly: true, path: "/", sameSite: "strict" });
 };
 
 const buildResetPasswordURL = (baseUrl: string, email: string) => {
@@ -80,7 +80,7 @@ export const proxy = async (req: NextRequest) => {
             cookie: [
               `accessToken=${tokenData.accessToken}`,
               `refreshToken=${tokenData.refreshToken}`,
-              `sessionToken=${tokenData.sessionToken}`,
+              `better-auth.session_token=${tokenData.sessionToken}`,
             ].join("; "),
           }),
         });

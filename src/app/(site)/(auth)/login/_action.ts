@@ -27,7 +27,7 @@ export const createLoginAction = async (payload: ILoginPayloadType,redirectURL:s
     // console.log("response",response?.data);
     await setTokenInCookie("accessToken", accessToken,(process?.env.ACCESS_TOKEN_SECRET as string));
     await setTokenInCookie("refreshToken", refreshToken,(process?.env.REFRESH_TOKEN_SECRET as string));
-    await setTokenInCookie("sessionToken", token);
+    await setTokenInCookie("better-auth.session_token", token);
     // if(!user?.emailVerified && user?.needPasswordChanges){
     //   redirect(`/verify-email?email=${user?.email}`);
 
