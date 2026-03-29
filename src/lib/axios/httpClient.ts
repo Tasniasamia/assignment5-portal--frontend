@@ -1,85 +1,82 @@
+
+
 // import { ApiResponse } from "@/types/api.types";
 // import axios from "axios";
 // import { isWillExpiredSoon, setTokenInCookie } from "../token.utils";
 // import { cookies, headers } from "next/headers";
-// import { getNewTokens } from "@/services/auth.service";
+// import { getNewTokens } from "@/service/auth.service";
 
 // const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-// if(!API_BASE_URL) {
-//     throw new Error('API_BASE_URL is not defined in environment variables');
+// if (!API_BASE_URL) {
+//   throw new Error("API_BASE_URL is not defined in environment variables");
 // }
 
 // async function tryRefreshToken(
 //   accessToken: string,
 //   refreshToken: string
-// ): Promise<void>
-// {
-//   if(!isWillExpiredSoon(accessToken)) {
-//       return;
-//   }
+// ): Promise<void> {
+//   if (!isWillExpiredSoon(accessToken)) return;
 
 //   const requestHeader = await headers();
-
-//   if (requestHeader.get("x-token-refreshed") === "1") {
-//       return; // avoid multiple refresh attempts in the same request lifecycle
-//   }
+//   if (requestHeader.get("x-token-refreshed") === "1") return;
 
 //   try {
-//      const tokenData=await getNewTokens(refreshToken);
-//       await setTokenInCookie("accessToken", tokenData?.accessToken,(process?.env.ACCESS_TOKEN_SECRET as string));
-//       await setTokenInCookie("refreshToken", tokenData?.refreshToken,(process?.env.REFRESH_TOKEN_SECRET as string));
-//       await setTokenInCookie("better-auth.session_token", tokenData?.sessionToken);
-
-//   } catch (error : any) {
-//       console.error("Error refreshing token in http client:", error);
+//     const tokenData = await getNewTokens(refreshToken);
+//     await setTokenInCookie("accessToken", tokenData?.accessToken, process?.env.ACCESS_TOKEN_SECRET as string);
+//     await setTokenInCookie("refreshToken", tokenData?.refreshToken, process?.env.REFRESH_TOKEN_SECRET as string);
+//     await setTokenInCookie("better-auth.session_token", tokenData?.sessionToken);
+//   } catch (error: any) {
+//     console.error("Error refreshing token in http client:", error);
 //   }
 // }
+
 // const axiosInstance = async () => {
-//     const cookieStore = await cookies();
-//     const accessToken = cookieStore.get("accessToken")?.value;
-//     const refreshToken = cookieStore.get("refreshToken")?.value;
+//   const cookieStore = await cookies();
+//   const accessToken = cookieStore.get("accessToken")?.value;
+//   const refreshToken = cookieStore.get("refreshToken")?.value;
 
-//     if(accessToken && refreshToken){
-//         await tryRefreshToken(accessToken, refreshToken);
-//     }
+//   if (accessToken && refreshToken) {
+//     await tryRefreshToken(accessToken, refreshToken);
+//   }
 
-//     const cookieHeader = cookieStore
-//                                 .getAll()
-//                                 .map((cookie) => `${cookie.name}=${cookie.value}`)
-//                                 .join("; ");    
-//     // eg Cookie: "accessToken=abc123; refreshToken=def456"
+//   const cookieHeader = cookieStore
+//     .getAll()
+//     .map((cookie) => `${cookie.name}=${cookie.value}`)
+//     .join("; ");
 
-//     const instance = axios.create({
-//         baseURL : API_BASE_URL,
-//         timeout : 30000,
-//         headers:{
-//             'Content-Type' : 'application/json',
-//             Cookie : cookieHeader
-//         }
-//     })
+//   const instance = axios.create({
+//     baseURL: API_BASE_URL,
+//     timeout: 30000,
+//     headers: {
+//       "Content-Type": "application/json",
+//       Cookie: cookieHeader,
+//     },
+//   });
 
-//     return instance;
-// }
-
+//   return instance;
+// };
 
 // export interface ApiRequestOptions {
 //   params?: Record<string, unknown>;
 //   headers?: Record<string, string>;
 // }
 
-// const httpGet = async <TData>(endPoint: string, options?: ApiRequestOptions):Promise<ApiResponse<TData>> => {
-//   try { 
-//     const instance = await axiosInstance();         
+// const httpGet = async <TData>(
+//   endPoint: string,
+//   options?: ApiRequestOptions
+// ): Promise<ApiResponse<TData>> => {
+//   try {
+//     const instance = await axiosInstance();
 //     const response = await instance.get<ApiResponse<TData>>(endPoint, {
-//         params: options?.params,
-//         headers: options?.headers,
+//       params: options?.params,
+//       headers: options?.headers,
 //     });
 //     return response.data;
-// } catch (error) {       
+//   } catch (error) {
 //     console.error(`GET request to ${endPoint} failed:`, error);
 //     throw error;
-// }
+//   }
 // };
 
 // const httpPost = async <TData>(
@@ -95,19 +92,98 @@
 //     });
 //     return response.data;
 //   } catch (error: any) {
-//     // ✅ এটা যোগ করো — backend এর actual validation message দেখাবে
 //     console.error("Backend error response:", error?.response?.data);
 //     throw error;
 //   }
 // };
 
+// // ✅ নতুন put method
+// const httpPut = async <TData>(
+//   endPoint: string,
+//   payload: Record<string, any>,
+//   options?: ApiRequestOptions
+// ): Promise<ApiResponse<TData>> => {
+//   try {
+//     const instance = await axiosInstance();
+//     const response = await instance.put<ApiResponse<TData>>(endPoint, payload, {
+//       params: options?.params,
+//       headers: options?.headers,
+//     });
+//     return response.data;
+//   } catch (error: any) {
+//     console.error("Backend error response:", error?.response?.data);
+//     throw error;
+//   }
+// };
+
+
+
+
+// // ✅ নতুন patch method
+// const httpPatch = async <TData>(
+//   endPoint: string,
+//   payload: Record<string, any>,
+//   options?: ApiRequestOptions
+// ): Promise<ApiResponse<TData>> => {
+//   try {
+//     const instance = await axiosInstance();
+//     const response = await instance.patch<ApiResponse<TData>>(endPoint, payload, {
+//       params: options?.params,
+//       headers: options?.headers,
+//     });
+//     return response.data;
+//   } catch (error: any) {
+//     console.error("Backend error response:", error?.response?.data);
+//     throw error;
+//   }
+// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// // ✅ delete method
+// const httpDelete = async <TData>(
+//   endPoint: string,
+//   options?: ApiRequestOptions
+// ): Promise<ApiResponse<TData>> => {
+//   try {
+//     const instance = await axiosInstance();
+//     const response = await instance.delete<ApiResponse<TData>>(endPoint, {
+//       params: options?.params,
+//       headers: options?.headers,
+//     });
+//     return response.data;
+//   } catch (error: any) {
+//     console.error("Backend error response:", error?.response?.data);
+//     throw error;
+//   }
+// };
+ 
 // export const httpClient = {
 //   get: httpGet,
 //   post: httpPost,
+//   put: httpPut,
+//   delete: httpDelete, // ✅
+//   patch:httpPatch
 // };
 
+
 import { ApiResponse } from "@/types/api.types";
-import axios from "axios";
+import axios, { AxiosRequestHeaders } from "axios";
 import { isWillExpiredSoon, setTokenInCookie } from "../token.utils";
 import { cookies, headers } from "next/headers";
 import { getNewTokens } from "@/service/auth.service";
@@ -129,8 +205,16 @@ async function tryRefreshToken(
 
   try {
     const tokenData = await getNewTokens(refreshToken);
-    await setTokenInCookie("accessToken", tokenData?.accessToken, process?.env.ACCESS_TOKEN_SECRET as string);
-    await setTokenInCookie("refreshToken", tokenData?.refreshToken, process?.env.REFRESH_TOKEN_SECRET as string);
+    await setTokenInCookie(
+      "accessToken",
+      tokenData?.accessToken,
+      process?.env.ACCESS_TOKEN_SECRET as string
+    );
+    await setTokenInCookie(
+      "refreshToken",
+      tokenData?.refreshToken,
+      process?.env.REFRESH_TOKEN_SECRET as string
+    );
     await setTokenInCookie("better-auth.session_token", tokenData?.sessionToken);
   } catch (error: any) {
     console.error("Error refreshing token in http client:", error);
@@ -151,7 +235,7 @@ const axiosInstance = async () => {
     .map((cookie) => `${cookie.name}=${cookie.value}`)
     .join("; ");
 
-  const instance = axios.create({
+  return axios.create({
     baseURL: API_BASE_URL,
     timeout: 30000,
     headers: {
@@ -159,8 +243,6 @@ const axiosInstance = async () => {
       Cookie: cookieHeader,
     },
   });
-
-  return instance;
 };
 
 export interface ApiRequestOptions {
@@ -168,21 +250,26 @@ export interface ApiRequestOptions {
   headers?: Record<string, string>;
 }
 
+const mergeHeaders = (
+  baseHeaders: Record<string, string>,
+  extraHeaders?: Record<string, string>
+): AxiosRequestHeaders => {
+  return {
+    ...baseHeaders,
+    ...(extraHeaders ?? {}),
+  };
+};
+
 const httpGet = async <TData>(
   endPoint: string,
   options?: ApiRequestOptions
 ): Promise<ApiResponse<TData>> => {
-  try {
-    const instance = await axiosInstance();
-    const response = await instance.get<ApiResponse<TData>>(endPoint, {
-      params: options?.params,
-      headers: options?.headers,
-    });
-    return response.data;
-  } catch (error) {
-    console.error(`GET request to ${endPoint} failed:`, error);
-    throw error;
-  }
+  const instance = await axiosInstance();
+  const response = await instance.get<ApiResponse<TData>>(endPoint, {
+    params: options?.params,
+    headers: options?.headers,
+  });
+  return response.data;
 };
 
 const httpPost = async <TData>(
@@ -203,7 +290,6 @@ const httpPost = async <TData>(
   }
 };
 
-// ✅ নতুন put method
 const httpPut = async <TData>(
   endPoint: string,
   payload: Record<string, any>,
@@ -222,10 +308,6 @@ const httpPut = async <TData>(
   }
 };
 
-
-
-
-// ✅ নতুন patch method
 const httpPatch = async <TData>(
   endPoint: string,
   payload: Record<string, any>,
@@ -244,24 +326,6 @@ const httpPatch = async <TData>(
   }
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// ✅ delete method
 const httpDelete = async <TData>(
   endPoint: string,
   options?: ApiRequestOptions
@@ -278,11 +342,103 @@ const httpDelete = async <TData>(
     throw error;
   }
 };
- 
+
+/* -------------------- FormData versions -------------------- */
+
+const httpPostForm = async <TData>(
+  endPoint: string,
+  payload: FormData,
+  options?: ApiRequestOptions
+): Promise<ApiResponse<TData>> => {
+  try {
+    const instance = await axiosInstance();
+    const response = await instance.post<ApiResponse<TData>>(endPoint, payload, {
+      params: options?.params,
+      headers: mergeHeaders(
+        { "Content-Type": "multipart/form-data" },
+        options?.headers
+      ),
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("Backend error response:", error?.response?.data);
+    throw error;
+  }
+};
+
+const httpPutForm = async <TData>(
+  endPoint: string,
+  payload: FormData,
+  options?: ApiRequestOptions
+): Promise<ApiResponse<TData>> => {
+  try {
+    const instance = await axiosInstance();
+    const response = await instance.put<ApiResponse<TData>>(endPoint, payload, {
+      params: options?.params,
+      headers: mergeHeaders(
+        { "Content-Type": "multipart/form-data" },
+        options?.headers
+      ),
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("Backend error response:", error?.response?.data);
+    throw error;
+  }
+};
+
+const httpPatchForm = async <TData>(
+  endPoint: string,
+  payload: FormData,
+  options?: ApiRequestOptions
+): Promise<ApiResponse<TData>> => {
+  try {
+    const instance = await axiosInstance();
+    const response = await instance.patch<ApiResponse<TData>>(endPoint, payload, {
+      params: options?.params,
+      headers: mergeHeaders(
+        { "Content-Type": "multipart/form-data" },
+        options?.headers
+      ),
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("Backend error response:", error?.response?.data);
+    throw error;
+  }
+};
+
+const httpDeleteForm = async <TData>(
+  endPoint: string,
+  payload: FormData,
+  options?: ApiRequestOptions
+): Promise<ApiResponse<TData>> => {
+  try {
+    const instance = await axiosInstance();
+    const response = await instance.delete<ApiResponse<TData>>(endPoint, {
+      data: payload, // delete request body
+      params: options?.params,
+      headers: mergeHeaders(
+        { "Content-Type": "multipart/form-data" },
+        options?.headers
+      ),
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("Backend error response:", error?.response?.data);
+    throw error;
+  }
+};
+
 export const httpClient = {
   get: httpGet,
   post: httpPost,
   put: httpPut,
-  delete: httpDelete, // ✅
-  patch:httpPatch
+  patch: httpPatch,
+  delete: httpDelete,
+
+  postForm: httpPostForm,
+  putForm: httpPutForm,
+  patchForm: httpPatchForm,
+  deleteForm: httpDeleteForm,
 };

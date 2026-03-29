@@ -20,36 +20,27 @@ interface NavItem {
 
 const adminNavItems: NavItem[] = [
   { label: "Dashboard",     href: "/admin/dashboard",     icon: <LayoutDashboard size={16} /> },
-  { label: "Users",         href: "/admin/users",         icon: <Users size={16} />,           badge: "24" },
-  { label: "Reports",       href: "/admin/reports",       icon: <BarChart3 size={16} /> },
-  { label: "Content",       href: "/admin/content",       icon: <FileText size={16} /> },
-  { label: "Notifications", href: "/admin/notifications", icon: <Bell size={16} />,            badge: "3" },
-  { label: "Permissions",   href: "/admin/permissions",   icon: <ShieldCheck size={16} /> },
+
   { label: "Settings",      href: "/admin/settings",      icon: <Settings size={16} /> },
 ];
 
 const memberNavItems: NavItem[] = [
   { label: "Dashboard",     href: "/member/dashboard",    icon: <LayoutDashboard size={16} /> },
-  { label: "My Courses",    href: "/member/courses",      icon: <BookOpen size={16} /> },
-  { label: "Favorites",     href: "/member/favorites",    icon: <Heart size={16} /> },
-  { label: "Messages",      href: "/member/messages",     icon: <MessageSquare size={16} />,   badge: "5" },
-  { label: "Billing",       href: "/member/billing",      icon: <CreditCard size={16} /> },
-  { label: "Notifications", href: "/member/notifications",icon: <Bell size={16} />,            badge: "2" },
-  { label: "Help",          href: "/member/help",         icon: <HelpCircle size={16} /> },
+
 ];
 
 interface SidebarProps {
   role: Role;
   userName?: string;
   userEmail?: string;
-  userAvatar?: string;
+  image?: string | null;
 }
 
 export default function Sidebar({
   role,
-  userName = "John Doe",
-  userEmail = "john@ecospark.com",
-  userAvatar,
+  userName ,
+  userEmail ,
+  image,
 }: SidebarProps) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
@@ -88,12 +79,12 @@ export default function Sidebar({
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-2 py-2 space-y-0.5" style={{ scrollbarWidth: "none" }}>
         {navItems.map((item) => {
-          const isActive = pathname === item.href;
+          const isActive = pathname === item?.href;
           return (
             <Link
-              key={item.href}
-              href={item.href}
-              title={collapsed ? item.label : undefined}
+              key={item?.href}
+              href={item?.href}
+              title={collapsed ? item?.label : undefined}
               className="group relative flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-all duration-150 text-sm"
               style={{
                 color: isActive ? "#ffffff" : "rgba(255,255,255,0.5)",
@@ -109,7 +100,7 @@ export default function Sidebar({
                   <span className="flex-1 truncate">{item.label}</span>
                   {item.badge && (
                     <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: "rgba(126,200,151,0.2)", color: "#7ec897" }}>
-                      {item.badge}
+                      {item?.badge}
                     </span>
                   )}
                 </>
@@ -117,7 +108,7 @@ export default function Sidebar({
               {collapsed && (
                 <div className="absolute left-full ml-2 px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50"
                   style={{ background: "#1c3829", color: "#fff", border: "1px solid rgba(255,255,255,0.1)" }}>
-                  {item.label}
+                  {item?.label}
                 </div>
               )}
             </Link>
@@ -130,15 +121,15 @@ export default function Sidebar({
         <div className={`flex items-center gap-2.5 ${collapsed ? "justify-center" : ""}`}>
           <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
             style={{ background: "linear-gradient(135deg,#4e8a5e,#2d5a3d)" }}>
-            {userAvatar
-              ? <img src={userAvatar} alt="" className="w-full h-full rounded-full object-cover" />
-              : userName.charAt(0).toUpperCase()}
+            {image
+              ? <img src={image} alt="" className="w-full h-full rounded-full object-cover" />
+              : userName?.charAt(0).toUpperCase()}
           </div>
           {!collapsed && (
             <>
               <div className="flex-1 min-w-0">
-                <p className="text-white text-xs font-medium truncate">{userName}</p>
-                <p className="text-xs truncate" style={{ color: "rgba(255,255,255,0.35)" }}>{userEmail}</p>
+                <p className="text-white text-xs font-medium truncate">{userName || 'User'}</p>
+                <p className="text-xs truncate" style={{ color: "rgba(255,255,255,0.35)" }}>{userEmail || 'N/A'}</p>
               </div>
               <button style={{ color: "rgba(255,100,100,0.5)" }} title="Logout">
                 <LogOut size={13} />
