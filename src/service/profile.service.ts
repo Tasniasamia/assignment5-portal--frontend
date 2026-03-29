@@ -41,12 +41,13 @@ export const updateProfileService = async (
         formData.append("images", file); // backend অনুযায়ী key
       });
     }
+console.log("formdata",formData);
 
     const response = await httpClient.patchForm<any>(
       "/auth/update-profile",
       formData
     );
-
+ console.log("response",response)
     return response;
   } catch (error: any) {
     console.error("Update Profile Error:", error?.response?.data);
@@ -61,8 +62,9 @@ export const deleteProfileImageService = async (
   filePath: string
 ) => {
   try {
+    console.log("filePath",filePath);
     // 🔥 JSON based delete (recommended)
-    const response = await httpClient.post<any>("/delete", {
+    const response = await httpClient.post<any>("/auth/delete", {
       filePath,
     });
 
