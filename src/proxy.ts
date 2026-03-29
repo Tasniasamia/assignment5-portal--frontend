@@ -62,11 +62,7 @@ export const proxy = async (req: NextRequest) => {
 
     const user = await getUserInfoMiddleware(req);
 
-    if (user?.needPasswordChanges) {
-      return NextResponse.next(); // password change দরকার → page দেখাও
-    }
-
-    // password change দরকার নেই → dashboard এ
+  
     return NextResponse.redirect(new URL(defaultRoute(userRole as string), req.url));
   }
 
@@ -100,13 +96,13 @@ export const proxy = async (req: NextRequest) => {
         else if (user?.emailVerified && pathname === '/verify-email') {
           targetResponse = NextResponse.redirect(new URL(defaultRoute(userRole as string), req.url));
         }
-        else if (user?.needPasswordChanges && pathname !== '/reset-password') {
-          // ✅ email সহ redirect
-          targetResponse = NextResponse.redirect(buildResetPasswordURL(req.url, user.email));
-        }
-        else if (!user?.needPasswordChanges && pathname === '/reset-password') {
-          targetResponse = NextResponse.redirect(new URL(defaultRoute(userRole as string), req.url));
-        }
+        // else if (user?.needPasswordChanges && pathname !== '/reset-password') {
+        //   // ✅ email সহ redirect
+        //   targetResponse = NextResponse.redirect(buildResetPasswordURL(req.url, user.email));
+        // }
+        // else if (!user?.needPasswordChanges && pathname === '/reset-password') {
+        //   targetResponse = NextResponse.redirect(new URL(defaultRoute(userRole as string), req.url));
+        // }
         else {
           targetResponse = NextResponse.next({
             request: { headers: new Headers(req.headers) }
@@ -143,14 +139,6 @@ export const proxy = async (req: NextRequest) => {
         return NextResponse.redirect(new URL(defaultRoute(userRole as string), req.url));
       }
 
-      if (user.needPasswordChanges && pathname !== '/reset-password') {
-        // ✅ email সহ redirect — এটাই আগে loop করাচ্ছিল!
-        return NextResponse.redirect(buildResetPasswordURL(req.url, user.email));
-      }
-
-      if (!user.needPasswordChanges && pathname === '/reset-password') {
-        return NextResponse.redirect(new URL(defaultRoute(userRole as string), req.url));
-      }
     }
   }
 

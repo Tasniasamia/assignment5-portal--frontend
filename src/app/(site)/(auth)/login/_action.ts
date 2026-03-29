@@ -27,20 +27,21 @@ export const createLoginAction = async (payload: ILoginPayloadType,redirectURL:s
     // console.log("response",response?.data);
     await setTokenInCookie("accessToken", accessToken,(process?.env.ACCESS_TOKEN_SECRET as string));
     await setTokenInCookie("refreshToken", refreshToken,(process?.env.REFRESH_TOKEN_SECRET as string));
-    await setTokenInCookie("better-auth.session_token", token);
+    await setTokenInCookie("sessionToken", token);
     // if(!user?.emailVerified && user?.needPasswordChanges){
     //   redirect(`/verify-email?email=${user?.email}`);
 
     // }
+    console.log("user data",user);
     if (!user?.emailVerified) {
       redirect(`/verify-email?email=${user?.email}`);
       // needPasswordChanges থাকলেও এখানে আসবে না
     }
             
-        if(user?.needPasswordChanges){
+      //   if(user?.needPasswordChanges){
 
-          redirect(`/reset-password?email=${user?.email}`);
-      }
+      //     redirect(`/reset-password?email=${user?.email}`);
+      // }
     if (redirectURL && isValidRedirect(redirectURL, user.role)) {
       redirect(redirectURL);
     }

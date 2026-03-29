@@ -17,7 +17,7 @@ export interface user {
   image?: string | null | undefined | undefined;
   role: string;
   status: string;
-  needPasswordChanges: boolean;
+  // needPasswordChanges: boolean;
   isDeleted: boolean;
   deletedAt?: Date | null | undefined;
 }
@@ -37,7 +37,7 @@ export interface IPatient {
     role: string;
     status:string;
   
-    needPasswordChanges: boolean;
+    // needPasswordChanges: boolean;
     isDeleted: boolean;
     deletedAt: string | null;
   

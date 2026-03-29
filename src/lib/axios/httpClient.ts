@@ -131,7 +131,7 @@ async function tryRefreshToken(
     const tokenData = await getNewTokens(refreshToken);
     await setTokenInCookie("accessToken", tokenData?.accessToken, process?.env.ACCESS_TOKEN_SECRET as string);
     await setTokenInCookie("refreshToken", tokenData?.refreshToken, process?.env.REFRESH_TOKEN_SECRET as string);
-    await setTokenInCookie("better-auth.session_token", tokenData?.sessionToken);
+    await setTokenInCookie("sessionToken", tokenData?.sessionToken);
   } catch (error: any) {
     console.error("Error refreshing token in http client:", error);
   }

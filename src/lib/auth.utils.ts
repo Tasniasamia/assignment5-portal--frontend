@@ -56,26 +56,17 @@ export const isMatchRoute=(path:string,routeConfig:RouteConfigType)=>{
     }
   }
 
-  export const defaultRoute=(role:string)=>{
-    if((role==="ADMIN")){
-        return '/admin/dashboard'
-    }
-    if(role==="MEMBER"){
-        return '/member/dashboard'
+export const defaultRoute = (role: string) => {
+  const normalized = role?.toUpperCase(); // ← এটাই fix
+  if (normalized === "ADMIN") return '/admin/dashboard';
+  if (normalized === "MEMBER") return '/member/dashboard';
+  return '/';
+};
 
-    }
- 
-
-    return '/'
-  }
-
-
-  export const isValidRedirect=(path:string,role:string)=>{
-   const routeowner= routeOwner(path);
-   if(routeowner === role){
+export const isValidRedirect = (path: string, role: string) => {
+  const routeowner = routeOwner(path);
+  if (routeowner === role?.toUpperCase()) { // ← normalize করো
     return true;
-   }
-   return false;
   }
-
-  
+  return false;
+};

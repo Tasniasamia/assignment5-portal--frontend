@@ -10,7 +10,7 @@ import { NextRequest } from "next/server";
 export const getNewTokens = async (refreshToken: string) => {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/refresh-token`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh-token`,
       {
         method: "GET",
         headers: { Cookie: `refreshToken=${refreshToken}` },
