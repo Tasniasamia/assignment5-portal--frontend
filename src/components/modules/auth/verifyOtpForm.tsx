@@ -18,11 +18,15 @@ import { resendOTP, verifyOtpWithEmailAction } from "@/service/auth.service";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-const VerifyOtpForm = ({ email }: { email: string }) => {
+const VerifyOtpForm = ({ email, type }: { email: string; type: string }) => {
+
+
+        console.log("type for registration:  ",type);
+        console.log("email for registration: ",email);
+
   const [serverError, setServerError] = useState<string | null>(null);
   const queryClient = useQueryClient();
-const route=useRouter();
-
+  const route = useRouter();
 
   const { mutateAsync, isPending } = useMutation<
     TVerifyResponse | ApiErrorResponse,
@@ -48,7 +52,6 @@ const route=useRouter();
         queryClient.invalidateQueries({ queryKey: ["users"] });
       },
     });
-
   const form = useForm({
     defaultValues: {
       otp: "",
@@ -56,29 +59,50 @@ const route=useRouter();
     },
     onSubmit: async ({ value }) => {
       try {
-        setServerError(null);
-        if (!email) {
-          setServerError("Email is required for OTP verification");
-        }
-        if (value.otp.length < 6) {
-          setServerError("OTP must be 6 digits");
-        }
+        
 
-        console.log("OTP Submitted:", value.otp);
-        const verifyEmailResponse = await mutateAsync(value);
 
-        if ("success" in verifyEmailResponse && !verifyEmailResponse.success) {
-          console.log(
-            "loginResponse not success: ",
-            verifyEmailResponse.message,
-          );
-          
-          toast.error(verifyEmailResponse.message);
+        if (type && type === "forget-password") {
+          // route.push(`/reset-password?email=${email}&otp=${value?.otp}`);
+
+route.push(`/reset-password?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(value?.otp)}`);
+
+
+
           return;
+        } else if (type && type === "email-verification") {
+
+          setServerError(null);
+
+          if (!email) {
+            setServerError("Email is required for OTP verification");
+            return;
+          }
+
+          if (value.otp.length < 6) {
+            setServerError("OTP must be 6 digits");
+            return;
+          }
+
+          console.log("OTP Submitted:", value.otp);
+
+          const verifyEmailResponse = await mutateAsync(value);
+
+          if (
+            "success" in verifyEmailResponse &&
+            !verifyEmailResponse.success
+          ) {
+            console.log(
+              "loginResponse not success: ",
+              verifyEmailResponse.message,
+            );
+            toast.error(verifyEmailResponse.message);
+            return;
+          }
+
+          route.push("/login");
+          toast.success(verifyEmailResponse?.message);
         }
-        route.push("/login");
-        toast.success(verifyEmailResponse?.message);
-        // 👉 ekhane API call diba (verify OTP)
       } catch (error: unknown) {
         toast.error("OTP verification failed");
       }
@@ -150,32 +174,35 @@ const route=useRouter();
               <span className="text-blue-600 font-medium ">Resending...</span>
             ) : (
               <button
-  type="button"
-  onClick={async () => {
-    if (!email) {
-      toast.error("Email is required to resend OTP");
-      return;
-    }
+                type="button"
+                onClick={async () => {
+                  if (!email) {
+                    toast.error("Email is required to resend OTP");
+                    return;
+                  }
 
-    const resendOTPResponse = await resendOtpMutation({
-      email: email ?? "",
-      type: "email-verification",
-    });
-   console.log("resendOTPResponse",resendOTPResponse);
-    if (
-      "success" in resendOTPResponse &&
-      !resendOTPResponse.success
-    ) {
-      toast.error(resendOTPResponse.message);
-      return;
-    }
+                  const resendOTPResponse = await resendOtpMutation({
+                    email: email ?? "",
+                    type:
+                      type === "forget-password"
+                        ? "forget-password"
+                        : "email-verification",
+                  });
+                  console.log("resendOTPResponse", resendOTPResponse);
+                  if (
+                    "success" in resendOTPResponse &&
+                    !resendOTPResponse.success
+                  ) {
+                    toast.error(resendOTPResponse.message);
+                    return;
+                  }
 
-    toast.success(resendOTPResponse?.message);
-  }}
-  className="text-blue-600 cursor-pointer font-medium hover:underline"
->
-  Resend
-</button>
+                  toast.success(resendOTPResponse?.message);
+                }}
+                className="text-blue-600 cursor-pointer font-medium hover:underline"
+              >
+                Resend
+              </button>
             )}
           </p>
         </CardFooter>

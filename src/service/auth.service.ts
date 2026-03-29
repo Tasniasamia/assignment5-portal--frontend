@@ -201,3 +201,30 @@ export const verifyEmail = async (payload: {email:string}):Promise<TVerifyEmailR
     };
   }
 };
+
+export const resetPassword = async (payload: {email:string,otp:string,password:string}):Promise<TVerifyEmailResponse|ApiErrorResponse> => {
+  try {
+    const parsePayload: any =
+      authValidationSchema.resetPasswordSchema.safeParse(payload);
+    if (!parsePayload) {
+      return {
+        success: false,
+        message: `zod validation error. ${parsePayload?.error}`,
+      };
+    }
+    const response = await httpClient.post<TResendOTPResponse>(
+      "/auth/resetPassword",
+      payload
+    );
+    console.log("response",response);
+    const response2 = await response.data;
+      console.log("responsedata",response?.data)
+    
+    return {...response};
+  } catch (error: any) {
+    return {
+      success: false,
+      message: `Reset Password failed: ${error?.message}`,
+    };
+  }
+};

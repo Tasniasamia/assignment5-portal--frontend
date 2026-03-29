@@ -57,7 +57,7 @@ const RegisterForm = () => {
           toast.error(registerResponse?.message);
           return;
         }
-        router.push(`/verify-email?email=${value?.email}`);
+        router.push(`/verify-otp?email=${value?.email}`);
 
         toast.success("Please verify your email");
       } catch (error: any) {

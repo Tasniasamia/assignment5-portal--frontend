@@ -1,6 +1,6 @@
 import React from "react";
 import VerifyOtpForm from "@/components/modules/auth/verifyOtpForm";
-
+import PageBanner from "@/components/common/banner";
 export default async function Page({
   searchParams,
 }: {
@@ -10,7 +10,8 @@ export default async function Page({
   
   return (
     <div>
-      <VerifyOtpForm email={searchQueries.email as string} />
+    <PageBanner title="Verify OTP"/>
+      <VerifyOtpForm email={searchQueries.email as string} type="email-verification" />
     </div>
   );
 }

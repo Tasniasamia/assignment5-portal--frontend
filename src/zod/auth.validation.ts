@@ -47,6 +47,18 @@ const verifyEmailSchema=z.object({
         .string()
         .email("Invalid email address")
         .nonempty("Email is required")
-})
+});
+const resetPasswordSchema = z.object({
+    email: z
+        .string()
+        .email("Invalid email address")
+        .nonempty("Email is required"),
+    password: z
+        .string()
+        .min(8, "Minimum length will be 8 characters")
+        .max(20, "Maximum length can be 20 characters")
+        .nonempty("Password is required"),
+        otp: z.string().length(6, "OTP must be 6 digits")
+});
 
-export const authValidationSchema = {loginSchema ,registerSchema,verifyEmailWithOtpSchema,resendOTPSchema,verifyEmailSchema};
+export const authValidationSchema = {resetPasswordSchema,loginSchema ,registerSchema,verifyEmailWithOtpSchema,resendOTPSchema,verifyEmailSchema};

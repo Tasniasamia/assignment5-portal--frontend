@@ -36,7 +36,6 @@ const LoginForm = ({ redirect }: { redirect?: string | object }) => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
   });
-
   const form = useForm({
     defaultValues: {
       email: "",
@@ -45,8 +44,9 @@ const LoginForm = ({ redirect }: { redirect?: string | object }) => {
     onSubmit: async ({ value }: { value: ILoginPayloadType }) => {
       try {
         setServerError(null);
+    
         const loginResponse = await mutateAsync(value);
-
+    
         if ("success" in loginResponse && !loginResponse.success) {
           console.log("coming here");
           console.log("loginResponse not success: ", loginResponse.message);
@@ -142,7 +142,7 @@ const LoginForm = ({ redirect }: { redirect?: string | object }) => {
             {/* Forget Password */}
             <div className="text-right">
               <Link
-                href="/forget-password"
+                href={`/forget-password`}
                 className="text-sm text-blue-600 hover:underline"
               >
                 Forgot Password?
