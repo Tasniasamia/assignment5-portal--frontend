@@ -2,7 +2,7 @@
 import { httpClient } from "@/lib/axios/httpClient";
 import { verifyToken } from "@/lib/jwtUtils";
 import { ApiErrorResponse } from "@/types/api.types";
-import { TResendOTPResponse, TVerifyResponse } from "@/types/auth.types";
+import { TResendOTPResponse, TVerifyEmailResponse, TVerifyResponse } from "@/types/auth.types";
 import { authValidationSchema } from "@/zod/auth.validation";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
@@ -168,6 +168,36 @@ export const resendOTP = async (payload: {email:string,type:string}):Promise<TRe
     return {
       success: false,
       message: `Resend OTP failed: ${error?.message}`,
+    };
+  }
+};
+
+
+
+
+export const verifyEmail = async (payload: {email:string}):Promise<TVerifyEmailResponse|ApiErrorResponse> => {
+  try {
+    const parsePayload: any =
+      authValidationSchema.verifyEmailSchema.safeParse(payload);
+    if (!parsePayload) {
+      return {
+        success: false,
+        message: `zod validation error. ${parsePayload?.error}`,
+      };
+    }
+    const response = await httpClient.post<TResendOTPResponse>(
+      "/auth/sendOtp",
+      payload
+    );
+    console.log("response",response);
+    const { success , message, data } = await response.data;
+      console.log("responsedata",response?.data)
+    
+    return {...response};
+  } catch (error: any) {
+    return {
+      success: false,
+      message: `Verify Email failed: ${error?.message}`,
     };
   }
 };

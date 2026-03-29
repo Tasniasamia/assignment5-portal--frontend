@@ -42,6 +42,11 @@ const resendOTPSchema=z.object({
         type:z.string()
 })
 
+const verifyEmailSchema=z.object({
+         email: z
+        .string()
+        .email("Invalid email address")
+        .nonempty("Email is required")
+})
 
-
-export const authValidationSchema = {loginSchema ,registerSchema,verifyEmailWithOtpSchema,resendOTPSchema};
+export const authValidationSchema = {loginSchema ,registerSchema,verifyEmailWithOtpSchema,resendOTPSchema,verifyEmailSchema};
