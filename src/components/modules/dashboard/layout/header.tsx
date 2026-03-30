@@ -285,7 +285,7 @@ export default function Header() {
                 style={{ borderTop: "1px solid rgba(44,78,52,0.08)" }}
               >
                 <button
-                  className="w-full flex items-center gap-2.5 px-4 py-2 text-sm transition-colors"
+                  className="w-full cursor-pointer flex items-center gap-2.5 px-4 py-2 text-sm transition-colors"
                   style={{ color: "#b91c1c" }}
                   onClick={()=>{logout()}}
                 >

@@ -135,7 +135,7 @@ export default function Sidebar() {
                 <p className="text-white text-xs font-medium truncate">{userData?.userName || 'User'}</p>
                 <p className="text-xs truncate" style={{ color: "rgba(255,255,255,0.35)" }}>{userData?.userEmail || 'N/A'}</p>
               </div>
-              <button style={{ color: "rgba(255,100,100,0.5)" }} title="Logout" onClick={()=>{logout()}}>
+              <button style={{ color: "rgba(255,100,100,0.5)" ,cursor:"pointer"}} title="Logout" onClick={()=>{logout()}}>
                 <LogOut size={13} />
               </button>
             </>

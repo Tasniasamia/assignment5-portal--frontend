@@ -290,7 +290,7 @@ export const changePassword = async (payload: {
 export const logOut = async () => {
   console.log("NEXT_PUBLIC_API_BASE_URL",process.env.NEXT_PUBLIC_API_BASE_URL)
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/auth/logOut`,
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/logOut`,
     {
       method: "GET",
       credentials: "include", 
