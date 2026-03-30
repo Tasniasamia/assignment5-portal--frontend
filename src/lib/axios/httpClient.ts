@@ -249,16 +249,24 @@ export interface ApiRequestOptions {
   params?: Record<string, unknown>;
   headers?: Record<string, string>;
 }
-
 const mergeHeaders = (
   baseHeaders: Record<string, string>,
   extraHeaders?: Record<string, string>
-): AxiosRequestHeaders => {
+): Record<string, string> => {
   return {
     ...baseHeaders,
     ...(extraHeaders ?? {}),
   };
 };
+// const mergeHeaders = (
+//   baseHeaders: Record<string, string>,
+//   extraHeaders?: Record<string, string>
+// ): AxiosRequestHeaders => {
+//   return {
+//     ...baseHeaders,
+//     ...(extraHeaders ?? {}),
+//   };
+// };
 
 const httpGet = async <TData>(
   endPoint: string,

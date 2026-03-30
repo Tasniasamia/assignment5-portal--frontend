@@ -98,7 +98,7 @@ export default function FilterPanel({ filters }: IFilterPanelProps) {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger >
         <Button variant="outline" className="relative gap-2">
           <Filter className="h-4 w-4" />
           Filter
@@ -134,7 +134,7 @@ export default function FilterPanel({ filters }: IFilterPanelProps) {
                   <Label className="text-xs">{filter.label}</Label>
                   <Select
                     value={localValues[filter.key] ?? ""}
-                    onValueChange={(val) => setValue(filter.key, val)}
+                    onValueChange={(val:string|null|undefined|any) => setValue(filter.key, val)}
                   >
                     <SelectTrigger className="h-9">
                       <SelectValue placeholder={filter.placeholder ?? `All ${filter.label.toLowerCase()}`} />

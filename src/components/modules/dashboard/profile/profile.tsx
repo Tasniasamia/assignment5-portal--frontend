@@ -16,7 +16,7 @@ import UpdateProfile from "../../auth/updateProfileForm";
 import { useRouter } from "next/navigation";
 
 /* ─── helpers ─── */
-const formatDate = (iso) =>
+const formatDate = (iso:string | number | Date) =>
   new Date(iso).toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "short",
@@ -40,7 +40,12 @@ const Skeleton = () => (
 );
 
 /* ─── info card row ─── */
-const InfoCard = ({ icon: Icon, label, value }) => (
+interface InfoCardProps {
+  icon: React.ElementType;
+  label: string;
+  value?: string | number | null;
+}
+const InfoCard = ({ icon: Icon, label, value }:InfoCardProps) => (
   <div className="flex items-center gap-4 rounded-xl bg-white px-4 py-3.5 shadow-sm ring-1 ring-[#dde6d8]">
     <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-[#1a4a2e]/10">
       <Icon size={16} className="text-[#1a4a2e]" />
@@ -57,7 +62,7 @@ const InfoCard = ({ icon: Icon, label, value }) => (
 );
 
 /* ─── badge ─── */
-const Badge = ({ children, color = "green" }) => {
+const Badge = ({ children, color = "green" }:{children:React.ReactNode,color?: "green" | "teal" | "amber";}) => {
   const colors = {
     green: "bg-[#1a4a2e]/10 text-[#1a4a2e] ring-[#1a4a2e]/20",
     teal: "bg-emerald-50 text-emerald-700 ring-emerald-200",

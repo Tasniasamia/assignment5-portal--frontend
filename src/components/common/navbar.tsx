@@ -140,7 +140,7 @@ const { logout, isLoggingOut } = useLogout();
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-red-500 cursor-pointer" onClick={()=>{logout()}}>
+                    <DropdownMenuItem asChild className="text-red-500 cursor-pointer" onClick={()=>{logout()}}>
                       <LogOut className="w-4 h-4 mr-2 cursor-pointer"  /> Logout
                     </DropdownMenuItem>
                   </DropdownMenuContent>
