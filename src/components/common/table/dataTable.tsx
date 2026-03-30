@@ -156,7 +156,7 @@ export default function DataTable<TData>({
         </div>
       )}
 
-      <div className="rounded-lg border">
+      <div className="rounded-lg border border-gray-300 p-3 bg-white">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((hg) => (
