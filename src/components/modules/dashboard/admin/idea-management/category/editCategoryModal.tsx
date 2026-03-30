@@ -78,8 +78,8 @@ export default function EditCategoryModal({
   }, [currentCategory]);
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg w-full rounded-xl">
+    <Dialog open={open} onOpenChange={onClose} className="">
+      <DialogContent className="sm:max-w-lg w-full rounded-xl !bg-white">
         <DialogHeader className="pb-2 border-b">
           <DialogTitle className="text-lg font-semibold">
             Edit Category
@@ -96,7 +96,7 @@ export default function EditCategoryModal({
               e.preventDefault();
               form.handleSubmit();
             }}
-            className="space-y-5 pt-2"
+            className="space-y-5 pt-2 "
           >
             <form.Field
               name="name"
@@ -134,7 +134,7 @@ export default function EditCategoryModal({
               <Button type="button" variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={isPending}>
+              <Button type="submit" variant="outline" disabled={isPending}>
                 {isPending && (
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
                 )}

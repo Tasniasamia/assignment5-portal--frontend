@@ -193,7 +193,7 @@ export default function AddCategoryModal() {
         Add Category
       </DialogTrigger>
 
-      <DialogContent className="max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl w-full max-h-[90vh] overflow-y-auto !bg-white">
         <DialogHeader>
           <DialogTitle>Add New Category</DialogTitle>
         </DialogHeader>
@@ -250,7 +250,7 @@ export default function AddCategoryModal() {
               Cancel
             </Button>
 
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" variant="outline" disabled={isPending}>
               {isPending && (
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
               )}
