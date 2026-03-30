@@ -287,28 +287,6 @@ export const changePassword = async (payload: {
 };
 
 
-// export const logOut = async () => {
-//   console.log("NEXT_PUBLIC_API_BASE_URL",process.env.NEXT_PUBLIC_API_BASE_URL)
-//     const cookieStore = await cookies();
-//    const cookieHeader = cookieStore
-//       .getAll()
-//       .map((c) => `${c.name}=${c.value}`)
-//       .join("; ");
-//   const response = await fetch(
-//     `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/logOut`,
-//     {
-//       method: "GET",
-//       credentials: "include", 
-//         headers: {
-//           "Content-Type": "application/json",
-//           Cookie: cookieHeader,
-//         },
-//     }
-//   );
- 
-//   const data = await response.json();
-//   return data;
-// };
  
 
 export const logOut = async () => {
@@ -332,7 +310,6 @@ export const logOut = async () => {
 
   const data = await response.json();
 
-  // ✅ Backend call এর পরে manually cookies delete করো
   if (data.success) {
     cookieStore.delete("accessToken");
     cookieStore.delete("refreshToken");
