@@ -24,6 +24,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useLogout } from "@/actions/logout.action";
+import { useProfile } from "@/actions/user.action";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -33,16 +34,19 @@ const navLinks = [
 ];
 
 // Demo — replace with your auth context/hook
-const useAuth = () => {
-  return { user: null, isLoggedIn: false };
-};
-const { logout, isLoggingOut } = useLogout();
+// const useAuth = () => {
+//   return { user: null, isLoggedIn: false };
+
+// };
 
 export default function Header() {
   const pathname = usePathname();
-  const { user, isLoggedIn } = useAuth();
+  // const { user, isLoggedIn } = useAuth();
+    const { data, isLoading } = useProfile();
+  
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+const { logout, isLoggingOut } = useLogout();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -93,13 +97,13 @@ export default function Header() {
 
           {/* Right side */}
           <div className="hidden lg:flex items-center gap-3">
-            {isLoggedIn && user ? (
+            {data && data?.email ? (
               <>
-                <Link href="/dashboard">
+                <Link href={data?.role === "ADMIN"?"/admin/dashboard":"/member/dashboard"}>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="border-[var(--forest)] text-[var(--forest)] hover:bg-[var(--forest)] hover:text-white"
+                    className="cursor-pointer border-[var(--forest)] text-[var(--forest)] hover:bg-[var(--forest)] hover:text-white"
                   >
                     <LayoutDashboard className="w-4 h-4 mr-2" />
                     Dashboard
@@ -108,30 +112,30 @@ export default function Header() {
                 <DropdownMenu>
                   <DropdownMenuTrigger className="flex items-center gap-2 outline-none">
                     <Avatar className="w-9 h-9 border-2 border-[var(--sage)]">
-                      <AvatarImage src={(user as any)?.image} />
+                      <AvatarImage src={(data?.image as string)} />
                       <AvatarFallback className="bg-[var(--forest)] text-white text-sm">
-                        {(user as any)?.name?.charAt(0) || "U"}
+                        {(data?.name as string)?.charAt(0) || "U"}
                       </AvatarFallback>
                     </Avatar>
                     <ChevronDown className="w-4 h-4 text-[var(--ink-muted)]" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
                     <div className="px-3 py-2 border-b border-[var(--border)]">
-                      <p className="text-sm font-medium">{(user as any)?.name}</p>
-                      <p className="text-xs text-[var(--ink-faint)]">{(user as any)?.email}</p>
+                      <p className="text-sm font-medium">{(data?.name as any)}</p>
+                      <p className="text-xs text-[var(--ink-faint)]">{(data?.email as any)}</p>
                     </div>
                     <DropdownMenuItem  asChild>
-                      <Link href="/profile" className="flex items-center gap-2 cursor-pointer">
+                      <Link href="/my-profile" className="flex items-center gap-2 cursor-pointer">
                         <User className="w-4 h-4" /> My Profile
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/dashboard" className="flex items-center gap-2 cursor-pointer">
+                      <Link href={data?.role === "ADMIN"?"/admin/dashboard":"/member/dashboard"} className="flex items-center gap-2 cursor-pointer">
                         <LayoutDashboard className="w-4 h-4" /> Dashboard
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/settings" className="flex items-center gap-2 cursor-pointer">
+                      <Link href="/changePassword" className="flex items-center gap-2 cursor-pointer">
                         <Settings className="w-4 h-4" /> Settings
                       </Link>
                     </DropdownMenuItem>
@@ -195,9 +199,9 @@ export default function Header() {
                   </Link>
                 ))}
                 <div className="section-divider my-4" />
-                {isLoggedIn ? (
+                {data?.email ? (
                   <>
-                    <Link href="/dashboard" onClick={() => setMobileOpen(false)}>
+                    <Link href={data?.role === "ADMIN"?"/admin/dashboard":"/member/dashboard"} onClick={() => setMobileOpen(false)}>
                       <Button className="w-full bg-[var(--forest)] text-white">
                         <LayoutDashboard className="w-4 h-4 mr-2" /> Dashboard
                       </Button>
