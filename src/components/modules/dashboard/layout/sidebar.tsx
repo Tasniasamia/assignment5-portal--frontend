@@ -1,4 +1,5 @@
 "use client";
+import { useProfile } from "@/actions/user.action";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -8,8 +9,6 @@ import {
   FileText, Bell, CreditCard, BookOpen, Heart, MessageSquare,
   HelpCircle, ChevronLeft, ChevronRight, LogOut, Leaf,
 } from "lucide-react";
-
-type Role = "admin" | "member";
 
 interface NavItem {
   label: string;
@@ -28,23 +27,26 @@ const memberNavItems: NavItem[] = [
   { label: "Dashboard",     href: "/member/dashboard",    icon: <LayoutDashboard size={16} /> },
 
 ];
-
 interface SidebarProps {
-  role: Role;
+  role: string;
   userName?: string;
   userEmail?: string;
   image?: string | null;
 }
 
-export default function Sidebar({
-  role,
-  userName ,
-  userEmail ,
-  image,
-}: SidebarProps) {
+export default function Sidebar() {
+  const { data, isLoading } = useProfile();
+
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
-  const navItems = role === "admin" ? adminNavItems : memberNavItems;
+  const userData={
+  role:data?.role === "ADMIN" ? "admin":data?.role==="MEMBER"?"member":"member",
+  userName:data?.name ,
+  userEmail:data?.email ,
+  image:data?.image,
+  } as SidebarProps
+
+  let navItems=data?.role === "ADMIN"?adminNavItems:memberNavItems;
 
   return (
     <aside
@@ -71,7 +73,7 @@ export default function Sidebar({
             style={{ background: "rgba(126,200,151,0.15)", color: "#7ec897", border: "1px solid rgba(126,200,151,0.25)" }}
           >
             <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#7ec897" }} />
-            {role === "admin" ? "Administrator" : "Member"}
+            {data?.role === "ADMIN" ? "Administrator" : "Member"}
           </span>
         </div>
       )}
@@ -121,15 +123,15 @@ export default function Sidebar({
         <div className={`flex items-center gap-2.5 ${collapsed ? "justify-center" : ""}`}>
           <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
             style={{ background: "linear-gradient(135deg,#4e8a5e,#2d5a3d)" }}>
-            {image
-              ? <img src={image} alt="" className="w-full h-full rounded-full object-cover" />
-              : userName?.charAt(0).toUpperCase()}
+            {userData?.image
+              ? <img src={userData?.image} alt="" className="w-full h-full rounded-full object-cover" />
+              : userData?.userName?.charAt(0).toUpperCase()}
           </div>
           {!collapsed && (
             <>
               <div className="flex-1 min-w-0">
-                <p className="text-white text-xs font-medium truncate">{userName || 'User'}</p>
-                <p className="text-xs truncate" style={{ color: "rgba(255,255,255,0.35)" }}>{userEmail || 'N/A'}</p>
+                <p className="text-white text-xs font-medium truncate">{userData?.userName || 'User'}</p>
+                <p className="text-xs truncate" style={{ color: "rgba(255,255,255,0.35)" }}>{userData?.userEmail || 'N/A'}</p>
               </div>
               <button style={{ color: "rgba(255,100,100,0.5)" }} title="Logout">
                 <LogOut size={13} />

@@ -526,7 +526,7 @@ export default function ImageUpload({
         {/* 🆕 New Images */}
         {previews.map((url, i) => (
           <div key={i} className="relative">
-            <img src={url} className="w-8 h-8 object-cover rounded" />
+            <img src={url} className="w-16 h-16 object-cover rounded" />
             <button type="button"
               onClick={() => removeNew(i)}
               className="absolute top-0 right-0 bg-black text-white text-xs px-1 rounded"

@@ -1,15 +1,18 @@
-import UpdateProfile from '@/components/modules/auth/updateProfileForm';
-import { getUserInfo } from '@/service/auth.service';
-import React from 'react';
+import { getUserInfo } from "@/service/auth.service";
+import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import Profile from "@/components/modules/dashboard/profile/profile";
 
-const MyProfile = async() => {
-      const data=await getUserInfo();
-    
-    return (
-        <div>
-            <UpdateProfile data={data}/>
-        </div>
-    );
-};
+export default async function Page() {
+const queryClient = new QueryClient();
+await queryClient.prefetchQuery({
+    queryKey: ["users"],
+    queryFn: getUserInfo,
+  });
 
-export default MyProfile;
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Profile
+      />
+    </HydrationBoundary>
+  );
+}

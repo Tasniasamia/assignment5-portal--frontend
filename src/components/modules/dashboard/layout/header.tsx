@@ -12,18 +12,20 @@ import {
   LogOut,
 } from "lucide-react";
 import Link from "next/link";
-type Role = "admin" | "member";
+import { useProfile } from "@/actions/user.action";
 
 interface HeaderProps {
-  role: Role;
+  role: string;
   userName?: string;
   image?: string;
 }
 
-export default function Header({ role, userName, image }: HeaderProps) {
+export default function Header() {
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-
+    const { data, isLoading } = useProfile();
+  
+   const userData={ role:data?.role === "ADMIN" ? "admin":data?.role==="MEMBER"?"member":"member", userName:data?.name, image:data?.image } as  HeaderProps
   const adminNotifs = [
     { id: 1, text: "New user registered", time: "2m ago", color: "#3a6647" },
     { id: 2, text: "Server usage at 89%", time: "10m ago", color: "#c97a20" },
@@ -38,7 +40,7 @@ export default function Header({ role, userName, image }: HeaderProps) {
       color: "#3a6647",
     },
   ];
-  const notifs = role === "admin" ? adminNotifs : memberNotifs;
+  const notifs = userData?.role === "admin" ? adminNotifs : memberNotifs;
 
   const pillStyle = {
     background: "#d4e8d8",
@@ -61,7 +63,7 @@ export default function Header({ role, userName, image }: HeaderProps) {
           Dashboard
         </h1>
         <p className="text-[10px]" style={{ color: "#8a9e8e" }}>
-          {role === "admin" ? "Admin Control Panel" : "Member Dashboard"}
+          {userData?.role === "admin" ? "Admin Control Panel" : "Member Dashboard"}
         </p>
       </div>
 
@@ -77,7 +79,7 @@ export default function Header({ role, userName, image }: HeaderProps) {
         <input
           type="text"
           placeholder={
-            role === "admin"
+            userData?.role === "admin"
               ? "Search users, reports..."
               : "Search courses, content..."
           }
@@ -99,8 +101,8 @@ export default function Header({ role, userName, image }: HeaderProps) {
           className="hidden sm:flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1.5 rounded-full"
           style={pillStyle}
         >
-          {role === "admin" ? <Shield size={11} /> : <Leaf size={11} />}
-          {role === "admin" ? "Admin" : "Member"}
+          {userData?.role === "admin" ? <Shield size={11} /> : <Leaf size={11} />}
+          {data?.role}
         </div>
 
         {/* Notifications */}
@@ -187,7 +189,7 @@ export default function Header({ role, userName, image }: HeaderProps) {
         </div>
 
         {/* Settings (admin only) */}
-        {role === "admin" && (
+        {userData?.role === "admin" && (
           <button
             className="w-8 h-8 flex items-center justify-center rounded-lg transition-all"
             style={{ color: "#4a5e4e" }}
@@ -210,21 +212,21 @@ export default function Header({ role, userName, image }: HeaderProps) {
               className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold"
               style={{ background: "linear-gradient(135deg,#4e8a5e,#2d5a3d)" }}
             >
-              {image ? (
+              {userData?.image ? (
                 <img
-                  src={image}
+                  src={userData?.image}
                   alt=""
                   className="w-full h-full rounded-full object-cover"
                 />
               ) : (
-                userName?.charAt(0).toUpperCase()
+                userData?.userName?.charAt(0).toUpperCase()
               )}
             </div>
             <span
               className="text-sm hidden sm:block"
               style={{ color: "#4a5e4e" }}
             >
-              {userName?.split(" ")[0]}
+              {userData?.userName?.split(" ")[0]}
             </span>
             <ChevronDown size={12} style={{ color: "#8a9e8e" }} />
           </button>
@@ -246,10 +248,10 @@ export default function Header({ role, userName, image }: HeaderProps) {
                   className="text-sm font-semibold"
                   style={{ color: "#1a2b1f" }}
                 >
-                  {userName}
+                  {userData?.userName}
                 </p>
                 <p className="text-xs capitalize" style={{ color: "#8a9e8e" }}>
-                  {role}
+                  {userData?.role}
                 </p>
               </div>
               <div className="py-1">

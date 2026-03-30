@@ -1,8 +1,12 @@
-'use server'
+"use server";
 import { httpClient } from "@/lib/axios/httpClient";
 import { verifyToken } from "@/lib/jwtUtils";
 import { ApiErrorResponse } from "@/types/api.types";
-import { TResendOTPResponse, TVerifyEmailResponse, TVerifyResponse } from "@/types/auth.types";
+import {
+  TResendOTPResponse,
+  TVerifyEmailResponse,
+  TVerifyResponse,
+} from "@/types/auth.types";
 import { authValidationSchema } from "@/zod/auth.validation";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
@@ -14,14 +18,18 @@ export const getNewTokens = async (refreshToken: string) => {
       {
         method: "GET",
         headers: { Cookie: `refreshToken=${refreshToken}` },
-      }
+      },
     );
 
     if (!res.ok) return null;
     const responseData = await res.json();
     if (!responseData?.success) return null;
 
-    const { accessToken, refreshToken: newRefreshToken, sessionToken } = responseData?.data;
+    const {
+      accessToken,
+      refreshToken: newRefreshToken,
+      sessionToken,
+    } = responseData?.data;
 
     return { accessToken, refreshToken: newRefreshToken, sessionToken };
   } catch (error: unknown) {
@@ -29,7 +37,6 @@ export const getNewTokens = async (refreshToken: string) => {
     return null;
   }
 };
-
 
 export async function getUserInfo() {
   try {
@@ -44,7 +51,7 @@ export async function getUserInfo() {
     // Optional: verify token on the frontend before calling backend
     const verified = await verifyToken(
       accessToken,
-      process.env.ACCESS_TOKEN_SECRET as string
+      process.env.ACCESS_TOKEN_SECRET as string,
     );
     if (!verified) {
       return null;
@@ -55,26 +62,33 @@ export async function getUserInfo() {
       .getAll()
       .map((c) => `${c.name}=${c.value}`)
       .join("; ");
-
-    const res:any = await fetch(
+    const res: any = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/me`,
       {
         method: "GET",
         credentials: "include",
+        cache: "no-store", // ✅ এটাই লাগবে — Next.js cache করবে না
         headers: {
           "Content-Type": "application/json",
           Cookie: cookieHeader,
         },
-      }
+      },
     );
+    // const res:any = await fetch(
+    //   `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/me`,
+    //   {
+    //     method: "GET",
+    //     credentials: "include",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Cookie: cookieHeader,
+    //     },
+    //   }
+    // );
     // console.log("res", res);
 
     if (!res.ok) {
-      console.error(
-        "Failed to fetch user info:",
-        res.status,
-        res.statusText
-      );
+      console.error("Failed to fetch user info:", res.status, res.statusText);
       return null;
     }
 
@@ -83,47 +97,59 @@ export async function getUserInfo() {
 
     return data;
   } catch (error) {
-      console.error("Error fetching user info:", error);
-      return null;
+    console.error("Error fetching user info:", error);
+    return null;
   }
 }
 // auth.service.ts
 
-
 export async function getUserInfoMiddleware(req: NextRequest) {
   try {
-      const accessToken = req.cookies.get("accessToken")?.value;
-      // console.log("accessToken",accessToken);
-      if (!accessToken) return null;
-      // Token verify করুন আগে
-      const verified = await verifyToken(
-        accessToken, 
-        process.env.ACCESS_TOKEN_SECRET as string
-      );
-      
-      if (!verified) return null; // ← expired token দিয়ে call করবে না
-      const allCookies = req.headers.get("cookie") || "";
+    const accessToken = req.cookies.get("accessToken")?.value;
+    // console.log("accessToken",accessToken);
+    if (!accessToken) return null;
+    // Token verify করুন আগে
+    const verified = await verifyToken(
+      accessToken,
+      process.env.ACCESS_TOKEN_SECRET as string,
+    );
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/me`, {
-          method: "GET",
-          headers: {
-              "Content-Type": "application/json",
-              Cookie: allCookies
-          }
-      });
+    if (!verified) return null; // ← expired token দিয়ে call করবে না
+    const allCookies = req.headers.get("cookie") || "";
 
+    // const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/me`, {
+    //     method: "GET",
+    //     headers: {
+    //         "Content-Type": "application/json",
+    //         Cookie: allCookies
+    //     }
+    // });
+    const res: any = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/me`,
+      {
+        method: "GET",
+        credentials: "include",
+        cache: "no-store", // ✅ এটাই লাগবে — Next.js cache করবে না
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: allCookies,
+        },
+      },
+    );
 
-      const {data}= await res.json();
-      // console.log("data",data);
-      return data;
-
+    const { data } = await res.json();
+    // console.log("data",data);
+    return data;
   } catch (error) {
-      console.error("Error fetching user info:", error);
-      return null;
+    console.error("Error fetching user info:", error);
+    return null;
   }
 }
 
-export const verifyOtpWithEmailAction = async (payload: {email:string,otp:string}):Promise<TVerifyResponse|ApiErrorResponse> => {
+export const verifyOtpWithEmailAction = async (payload: {
+  email: string;
+  otp: string;
+}): Promise<TVerifyResponse | ApiErrorResponse> => {
   try {
     const parsePayload: any =
       authValidationSchema.verifyEmailWithOtpSchema.safeParse(payload);
@@ -135,12 +161,12 @@ export const verifyOtpWithEmailAction = async (payload: {email:string,otp:string
     }
     const response = await httpClient.post<TVerifyResponse>(
       "/auth/verify-email",
-      payload
+      payload,
     );
-    const { success , message, data } = await response.data;
-      console.log("responsedata",response?.data)
-    
-    return {...response};
+    const { success, message, data } = await response.data;
+    console.log("responsedata", response?.data);
+
+    return { ...response };
   } catch (error: any) {
     return {
       success: false,
@@ -149,7 +175,10 @@ export const verifyOtpWithEmailAction = async (payload: {email:string,otp:string
   }
 };
 
-export const resendOTP = async (payload: {email:string,type:string}):Promise<TResendOTPResponse|ApiErrorResponse> => {
+export const resendOTP = async (payload: {
+  email: string;
+  type: string;
+}): Promise<TResendOTPResponse | ApiErrorResponse> => {
   try {
     const parsePayload: any =
       authValidationSchema.resendOTPSchema.safeParse(payload);
@@ -161,13 +190,13 @@ export const resendOTP = async (payload: {email:string,type:string}):Promise<TRe
     }
     const response = await httpClient.post<TResendOTPResponse>(
       "/auth/resend-otp",
-      payload
+      payload,
     );
-    console.log("response",response);
-    const { success , message, data } = await response.data;
-      console.log("responsedata",response?.data)
-    
-    return {...response};
+    console.log("response", response);
+    const { success, message, data } = await response.data;
+    console.log("responsedata", response?.data);
+
+    return { ...response };
   } catch (error: any) {
     return {
       success: false,
@@ -176,10 +205,9 @@ export const resendOTP = async (payload: {email:string,type:string}):Promise<TRe
   }
 };
 
-
-
-
-export const verifyEmail = async (payload: {email:string}):Promise<TVerifyEmailResponse|ApiErrorResponse> => {
+export const verifyEmail = async (payload: {
+  email: string;
+}): Promise<TVerifyEmailResponse | ApiErrorResponse> => {
   try {
     const parsePayload: any =
       authValidationSchema.verifyEmailSchema.safeParse(payload);
@@ -191,13 +219,13 @@ export const verifyEmail = async (payload: {email:string}):Promise<TVerifyEmailR
     }
     const response = await httpClient.post<TResendOTPResponse>(
       "/auth/sendOtp",
-      payload
+      payload,
     );
-    console.log("response",response);
-    const { success , message, data } = await response.data;
-      console.log("responsedata",response?.data)
-    
-    return {...response};
+    console.log("response", response);
+    const { success, message, data } = await response.data;
+    console.log("responsedata", response?.data);
+
+    return { ...response };
   } catch (error: any) {
     return {
       success: false,
@@ -206,7 +234,11 @@ export const verifyEmail = async (payload: {email:string}):Promise<TVerifyEmailR
   }
 };
 
-export const resetPassword = async (payload: {email:string,otp:string,password:string}):Promise<TVerifyEmailResponse|ApiErrorResponse> => {
+export const resetPassword = async (payload: {
+  email: string;
+  otp: string;
+  password: string;
+}): Promise<TVerifyEmailResponse | ApiErrorResponse> => {
   try {
     const parsePayload: any =
       authValidationSchema.resetPasswordSchema.safeParse(payload);
@@ -218,13 +250,13 @@ export const resetPassword = async (payload: {email:string,otp:string,password:s
     }
     const response = await httpClient.post<TResendOTPResponse>(
       "/auth/resetPassword",
-      payload
+      payload,
     );
-    console.log("response",response);
+    console.log("response", response);
     const response2 = await response.data;
-      console.log("responsedata",response?.data)
-    
-    return {...response};
+    console.log("responsedata", response?.data);
+
+    return { ...response };
   } catch (error: any) {
     return {
       success: false,

@@ -1,7 +1,6 @@
 "use server";
 
 import { httpClient } from "@/lib/axios/httpClient";
-import { revalidatePath } from "next/cache";
 
 // ─────────────────────────────────────────────
 // 🔹 Types
@@ -49,9 +48,9 @@ console.log("formdata",formData);
       "/auth/update-profile",
       formData
     );
-    if (response.success) {
-  revalidatePath("/my-profile"); // তোমার actual page path
-}
+//     if (response.success) {
+//   revalidatePath("/my-profile"); // তোমার actual page path
+// }
 //  console.log("response",response)
     return response;
   } catch (error: any) {

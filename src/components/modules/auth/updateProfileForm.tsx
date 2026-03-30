@@ -378,6 +378,154 @@
 
 
 
+// "use client";
+
+// import { useEffect, useState } from "react";
+// import { useForm } from "@tanstack/react-form";
+// import { useMutation, useQueryClient } from "@tanstack/react-query";
+// import ImageUpload from "@/components/common/form/imageUploadForm";
+// import { updateProfileService, deleteProfileImageService } from "@/service/profile.service";
+// import { useRouter } from "next/navigation";
+// import { toast } from "sonner";
+
+// export default function UpdateProfile({ data }: { data: any }) {
+//   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
+//   const [newFile, setNewFile] = useState<File | null>(null);
+//   const [uploadKey, setUploadKey] = useState(0); // ✅ reset key
+//   const router=useRouter();
+  
+// const queryClient = useQueryClient();
+//   const { mutateAsync, isPending } = useMutation({
+//     mutationFn: updateProfileService,
+//      onSuccess: () => {
+//       queryClient.invalidateQueries({ queryKey: ["users"] });
+//     },
+//   });
+
+//   const form = useForm({
+//     defaultValues: { name: "", contactNumber: "" },
+//     onSubmit: async ({ value }) => {
+//       try {
+//         // setSuccess(null);
+
+//         const res = await mutateAsync({ ...value, file: newFile });
+
+//         if (!res.success) {
+//           toast.error(res.message || "Update failed");
+//           return;
+//         }
+// router.refresh();
+
+//         toast.success("Profile updated successfully!");
+
+//         if (newFile) {
+//           const preview = URL.createObjectURL(newFile);
+//           setExistingImageUrl(preview);
+//           setNewFile(null);
+//           setUploadKey((prev) => prev + 1); // ✅ ImageUpload remount → internal state reset
+//         }
+
+//       } catch (error: any) {
+//         toast.error(error?.message || "Something went wrong");
+//       }
+//     },
+//   });
+
+//   useEffect(() => {
+//     if (!data) return;
+//     const roleData = data.role === "ADMIN" ? data.admin : data.member;
+//     form.setFieldValue("name", data.name ?? "");
+//     form.setFieldValue("contactNumber", roleData?.contactNumber ?? "");
+//     const photo = roleData?.profilePhoto ?? data.image ?? null;
+//     setExistingImageUrl(photo);
+//   }, [data]);
+
+//   const handleDeleteImage = async (url: string) => {
+//     try {
+//       await deleteProfileImageService(url);
+//       setExistingImageUrl(null);
+//     } catch {
+//       toast.error("Failed to delete image");
+//     }
+//   };
+
+//   return (
+//     <div className="max-w-md mx-auto p-6 space-y-6 border rounded-xl">
+//       <form
+//         onSubmit={(e) => {
+//           e.preventDefault();
+//           e.stopPropagation();
+//           form.handleSubmit();
+//         }}
+//         className="space-y-5"
+//       >
+//         <div>
+//           <label className="text-sm font-medium">Profile Photo</label>
+//           <ImageUpload
+//             key={uploadKey} // ✅ save হলে remount → previews/files clear
+//             multiple={false}
+//             existingUrls={existingImageUrl ? [existingImageUrl] : []}
+//             onChange={(files) => setNewFile(files[0] ?? null)}
+//             onDeleteExisting={handleDeleteImage}
+//           />
+//         </div>
+
+//         {/* বাকি fields same থাকবে */}
+//         <form.Field name="name">
+//           {(field) => (
+//             <div>
+//               <label className="text-sm">Full Name</label>
+//               <input
+//                 value={field.state.value}
+//                 onChange={(e) => field.handleChange(e.target.value)}
+//                 className="w-full border p-2 rounded"
+//               />
+//             </div>
+//           )}
+//         </form.Field>
+
+//         <form.Field name="contactNumber">
+//           {(field) => (
+//             <div>
+//               <label className="text-sm">Contact Number</label>
+//               <input
+//                 value={field.state.value}
+//                 onChange={(e) => field.handleChange(e.target.value)}
+//                 className="w-full border p-2 rounded"
+//               />
+//             </div>
+//           )}
+//         </form.Field>
+
+//         <div>
+//           <label className="text-sm">Email</label>
+//           <input
+//             value={data?.email}
+//             disabled
+//             className="w-full border p-2 rounded bg-gray-100"
+//           />
+//         </div>
+
+      
+
+//         <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+//           {([canSubmit, isSubmitting]) => (
+//             <button
+//               type="submit"
+//               disabled={!canSubmit || isSubmitting || isPending}
+//               className="w-full bg-blue-600 text-white py-2 rounded"
+//             >
+//               {isSubmitting || isPending ? "Saving..." : "Save Changes"}
+//             </button>
+//           )}
+//         </form.Subscribe>
+//       </form>
+//     </div>
+//   );
+// }
+
+
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -385,19 +533,24 @@ import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ImageUpload from "@/components/common/form/imageUploadForm";
 import { updateProfileService, deleteProfileImageService } from "@/service/profile.service";
-import { useRouter } from "next/navigation";
+import { useDeleteImage, useProfile } from "@/actions/user.action";
+import { toast } from "sonner";
 
-export default function UpdateProfile({ data }: { data: any }) {
+export default function UpdateProfile() {
+  const { data, isLoading } = useProfile();
+  
+  const queryClient = useQueryClient();
+
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
   const [newFile, setNewFile] = useState<File | null>(null);
-  const [uploadKey, setUploadKey] = useState(0); // ✅ reset key
-  const router=useRouter();
-  const [serverError, setServerError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-const queryClient = useQueryClient();
+  const [uploadKey, setUploadKey] = useState(0);
+
+
+  
   const { mutateAsync, isPending } = useMutation({
     mutationFn: updateProfileService,
-     onSuccess: () => {
+    onSuccess: () => {
+      // ✅ এটাই হলো main কাজ — profile refetch হবে
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
   });
@@ -406,32 +559,28 @@ const queryClient = useQueryClient();
     defaultValues: { name: "", contactNumber: "" },
     onSubmit: async ({ value }) => {
       try {
-        setServerError(null);
-        setSuccess(null);
+  
 
         const res = await mutateAsync({ ...value, file: newFile });
 
         if (!res.success) {
-          setServerError(res.message || "Update failed");
+          toast.error(res.message || "Update failed");
           return;
         }
-router.refresh();
 
-        setSuccess("Profile updated successfully!");
-
-        if (newFile) {
-          const preview = URL.createObjectURL(newFile);
-          setExistingImageUrl(preview);
-          setNewFile(null);
-          setUploadKey((prev) => prev + 1); // ✅ ImageUpload remount → internal state reset
-        }
+        toast.success("Profile updated successfully!");
+        setNewFile(null);
+        setUploadKey((prev) => prev + 1);
 
       } catch (error: any) {
-        setServerError(error?.message || "Something went wrong");
+        toast.error(error?.message || "Something went wrong");
       }
     },
   });
 
+  // ─────────────────────────────
+  // Load initial data
+  // ─────────────────────────────
   useEffect(() => {
     if (!data) return;
     const roleData = data.role === "ADMIN" ? data.admin : data.member;
@@ -441,12 +590,18 @@ router.refresh();
     setExistingImageUrl(photo);
   }, [data]);
 
+  // ─────────────────────────────
+  // Delete image
+  // ─────────────────────────────
+  // const { data, isLoading } = useProfile();
+  const { mutateAsync: deleteImage } = useDeleteImage(); // ✅
+
   const handleDeleteImage = async (url: string) => {
     try {
-      await deleteProfileImageService(url);
+      await deleteImage(url); // ✅ onSuccess এ automatically invalidate হবে
       setExistingImageUrl(null);
     } catch {
-      setServerError("Failed to delete image");
+      // onError এ toast দেখাবে
     }
   };
 
@@ -463,7 +618,7 @@ router.refresh();
         <div>
           <label className="text-sm font-medium">Profile Photo</label>
           <ImageUpload
-            key={uploadKey} // ✅ save হলে remount → previews/files clear
+            key={uploadKey}
             multiple={false}
             existingUrls={existingImageUrl ? [existingImageUrl] : []}
             onChange={(files) => setNewFile(files[0] ?? null)}
@@ -471,7 +626,6 @@ router.refresh();
           />
         </div>
 
-        {/* বাকি fields same থাকবে */}
         <form.Field name="name">
           {(field) => (
             <div>
@@ -501,14 +655,13 @@ router.refresh();
         <div>
           <label className="text-sm">Email</label>
           <input
-            value={data?.email}
+            value={data?.email ?? ""}
             disabled
             className="w-full border p-2 rounded bg-gray-100"
           />
         </div>
 
-        {serverError && <p className="text-red-500 text-sm">{serverError}</p>}
-        {success && <p className="text-green-600 text-sm">{success}</p>}
+     
 
         <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
           {([canSubmit, isSubmitting]) => (
