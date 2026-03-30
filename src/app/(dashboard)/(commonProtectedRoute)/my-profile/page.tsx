@@ -16,3 +16,4 @@ await queryClient.prefetchQuery({
     </HydrationBoundary>
   );
 }
+

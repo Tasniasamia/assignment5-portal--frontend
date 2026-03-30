@@ -24,7 +24,7 @@ export default function Header() {
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
     const { data, isLoading } = useProfile();
-  
+  console.log("data",data);
    const userData={ role:data?.role === "ADMIN" ? "admin":data?.role==="MEMBER"?"member":"member", userName:data?.name, image:data?.image } as  HeaderProps
   const adminNotifs = [
     { id: 1, text: "New user registered", time: "2m ago", color: "#3a6647" },

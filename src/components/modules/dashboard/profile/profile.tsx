@@ -11,7 +11,7 @@ import {
   Hash,
   AlertCircle,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import UpdateProfile from "../../auth/updateProfileForm";
 
 /* ─── helpers ─── */
@@ -77,8 +77,14 @@ const Badge = ({ children, color = "green" }) => {
 const Profile = () => {
   const { data, isLoading } = useProfile();
   const [isEdit, setIsEdit] = useState(false);
-console.log("data ",data)
-  if (isLoading) {
+  const [mounted, setMounted] = useState(false); // ✅ hydration fix
+
+  useEffect(() => {
+    setMounted(true); // ✅ client-side mount হলে true হবে
+  }, []);
+
+  // Server ও Client উভয়ই প্রথমে Skeleton দেখাবে — hydration match থাকবে
+  if (!mounted || isLoading) {
     return (
       <div className="mx-auto max-w-2xl">
         <div className="rounded-2xl bg-[#f0ece4] shadow-md">
@@ -155,12 +161,12 @@ console.log("data ",data)
 
         {/* ── avatar overlapping header ── */}
         <div className="px-6">
-          <div className=" flex items-end gap-4">
+          <div className="flex items-end gap-4">
             <div className="relative flex-shrink-0">
               <img
-                src={roleData?.profilePhoto ?? data.image}
+                src={roleData?.profilePhoto ? data.image : "/default.jpg"}
                 alt={data.name}
-                className="h-24 w-24 rounded-2xl border-4 border-[#f0ece4] object-cover shadow-lg"
+                className="h-24 w-24 rounded-2xl -mt-9 border-4 border-[#f0ece4] object-cover shadow-lg"
               />
               {data.status === "ACTIVE" && (
                 <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full border-2 border-[#f0ece4] bg-emerald-500" />
@@ -224,10 +230,9 @@ console.log("data ",data)
         {/* ── password warning ── */}
         {data.needPasswordChanges && (
           <div className="mx-6 mt-5 flex items-start gap-3 rounded-xl bg-amber-50 px-4 py-3 ring-1 ring-amber-200">
-            <AlertCircle size={16} className="mt-0.5 flex-shrink-0 text-amber-500" />
             <div>
               <p className="text-sm font-semibold text-amber-700">
-                Password change required
+                Password change 
               </p>
               <p className="text-xs text-amber-600">
                 Please update your password to keep your account secure.

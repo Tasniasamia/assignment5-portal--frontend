@@ -67,7 +67,7 @@ export async function getUserInfo() {
       {
         method: "GET",
         credentials: "include",
-        cache: "no-store", // ✅ এটাই লাগবে — Next.js cache করবে না
+         cache:"no-store",// ✅ এটাই লাগবে — Next.js cache করবে না
         headers: {
           "Content-Type": "application/json",
           Cookie: cookieHeader,
@@ -85,7 +85,7 @@ export async function getUserInfo() {
     //     },
     //   }
     // );
-    // console.log("res", res);
+    console.log("res", res);
 
     if (!res.ok) {
       console.error("Failed to fetch user info:", res.status, res.statusText);
