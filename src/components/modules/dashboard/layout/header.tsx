@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useProfile } from "@/actions/user.action";
+import { useLogout } from "@/actions/logout.action";
 
 interface HeaderProps {
   role: string;
@@ -21,6 +22,8 @@ interface HeaderProps {
 }
 
 export default function Header() {
+  const { logout, isLoggingOut } = useLogout();
+  
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
     const { data, isLoading } = useProfile();
@@ -284,6 +287,7 @@ export default function Header() {
                 <button
                   className="w-full flex items-center gap-2.5 px-4 py-2 text-sm transition-colors"
                   style={{ color: "#b91c1c" }}
+                  onClick={()=>{logout()}}
                 >
                   <LogOut size={13} />
                   Sign out

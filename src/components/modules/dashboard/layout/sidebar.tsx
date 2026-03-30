@@ -9,6 +9,7 @@ import {
   FileText, Bell, CreditCard, BookOpen, Heart, MessageSquare,
   HelpCircle, ChevronLeft, ChevronRight, LogOut, Leaf,
 } from "lucide-react";
+import { useLogout } from "@/actions/logout.action";
 
 interface NavItem {
   label: string;
@@ -36,6 +37,7 @@ interface SidebarProps {
 
 export default function Sidebar() {
   const { data, isLoading } = useProfile();
+  const { logout, isLoggingOut } = useLogout();
 
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
@@ -133,7 +135,7 @@ export default function Sidebar() {
                 <p className="text-white text-xs font-medium truncate">{userData?.userName || 'User'}</p>
                 <p className="text-xs truncate" style={{ color: "rgba(255,255,255,0.35)" }}>{userData?.userEmail || 'N/A'}</p>
               </div>
-              <button style={{ color: "rgba(255,100,100,0.5)" }} title="Logout">
+              <button style={{ color: "rgba(255,100,100,0.5)" }} title="Logout" onClick={()=>{logout()}}>
                 <LogOut size={13} />
               </button>
             </>

@@ -60,5 +60,16 @@ const resetPasswordSchema = z.object({
         .nonempty("Password is required"),
         otp: z.string().length(6, "OTP must be 6 digits")
 });
+const changePasswordSchema=z.object({
+    newPassword: z
+    .string("newPassword is required")
+    .min(8, "Minimum lenth will be 8 characters")
+    .max(20, "Maximum length can be 20 characters"),
+    currentPassword: z
+    .string("currentPassword is required")
+    .min(8, "Minimum lenth will be 8 characters")
+    .max(20, "Maximum length can be 20 characters"),
 
-export const authValidationSchema = {resetPasswordSchema,loginSchema ,registerSchema,verifyEmailWithOtpSchema,resendOTPSchema,verifyEmailSchema};
+})
+
+export const authValidationSchema = {changePasswordSchema,resetPasswordSchema,loginSchema ,registerSchema,verifyEmailWithOtpSchema,resendOTPSchema,verifyEmailSchema};

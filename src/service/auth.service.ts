@@ -74,18 +74,8 @@ export async function getUserInfo() {
         },
       },
     );
-    // const res:any = await fetch(
-    //   `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/me`,
-    //   {
-    //     method: "GET",
-    //     credentials: "include",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Cookie: cookieHeader,
-    //     },
-    //   }
-    // );
-    console.log("res", res);
+    
+    // console.log("res", res);
 
     if (!res.ok) {
       console.error("Failed to fetch user info:", res.status, res.statusText);
@@ -264,3 +254,50 @@ export const resetPassword = async (payload: {
     };
   }
 };
+
+
+export const changePassword = async (payload: {
+  newPassword: string;
+  currentPassword: string;
+}): Promise<TResendOTPResponse | ApiErrorResponse> => {
+  try {
+    const parsePayload: any =
+      authValidationSchema.changePasswordSchema.safeParse(payload);
+    if (!parsePayload) {
+      return {
+        success: false,
+        message: `zod validation error. ${parsePayload?.error}`,
+      };
+    }
+    const response = await httpClient.post<TResendOTPResponse>(
+      "/auth/changePassword",
+      payload,
+    );
+    console.log("response", response);
+    const { success, message, data } = await response.data;
+    console.log("responsedata", response?.data);
+
+    return { ...response };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: `Change Password failed: ${error?.message}`,
+    };
+  }
+};
+
+
+export const logOut = async () => {
+  console.log("NEXT_PUBLIC_API_BASE_URL",process.env.NEXT_PUBLIC_API_BASE_URL)
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/auth/logOut`,
+    {
+      method: "GET",
+      credentials: "include", 
+    }
+  );
+ 
+  const data = await response.json();
+  return data;
+};
+ 

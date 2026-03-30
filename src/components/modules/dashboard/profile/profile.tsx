@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import UpdateProfile from "../../auth/updateProfileForm";
+import { useRouter } from "next/navigation";
 
 /* ─── helpers ─── */
 const formatDate = (iso) =>
@@ -78,7 +79,7 @@ const Profile = () => {
   const { data, isLoading } = useProfile();
   const [isEdit, setIsEdit] = useState(false);
   const [mounted, setMounted] = useState(false); // ✅ hydration fix
-
+  const {push}=useRouter();
   useEffect(() => {
     setMounted(true); // ✅ client-side mount হলে true হবে
   }, []);
@@ -228,8 +229,8 @@ const Profile = () => {
         </div>
 
         {/* ── password warning ── */}
-        {data.needPasswordChanges && (
-          <div className="mx-6 mt-5 flex items-start gap-3 rounded-xl bg-amber-50 px-4 py-3 ring-1 ring-amber-200">
+        
+          <div onClick={()=>{push("/changePassword")}} className="cursor-pointer mx-6 mt-5 flex items-start gap-3 rounded-xl bg-amber-50 px-4 py-3 ring-1 ring-amber-200">
             <div>
               <p className="text-sm font-semibold text-amber-700">
                 Password change 
@@ -239,7 +240,7 @@ const Profile = () => {
               </p>
             </div>
           </div>
-        )}
+      
 
         {/* ── footer ── */}
         <div className="mt-6 border-t border-[#d4cfc6] px-6 py-4">

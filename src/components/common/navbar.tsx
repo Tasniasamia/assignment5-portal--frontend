@@ -23,6 +23,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { useLogout } from "@/actions/logout.action";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -35,6 +36,7 @@ const navLinks = [
 const useAuth = () => {
   return { user: null, isLoggedIn: false };
 };
+const { logout, isLoggingOut } = useLogout();
 
 export default function Header() {
   const pathname = usePathname();
@@ -135,7 +137,7 @@ export default function Header() {
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem className="text-red-500 cursor-pointer">
-                      <LogOut className="w-4 h-4 mr-2" /> Logout
+                      <LogOut className="w-4 h-4 mr-2" onClick={()=>{logout()}} /> Logout
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
