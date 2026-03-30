@@ -15,9 +15,10 @@ export const useLogout = () => {
         toast.error(response?.message || "Logout failed");
         return;
       }
+      queryClient.invalidateQueries({ queryKey: ["users"] });
 
       // সব cached query clear করো
-      queryClient.clear();
+      // queryClient.clear();
 
       toast.success("Logged out successfully");
 

@@ -1,7 +1,8 @@
 import Footer from "@/components/modules/dashboard/layout/footer";
 import Header from "@/components/modules/dashboard/layout/header";
 import Sidebar from "@/components/modules/dashboard/layout/sidebar";
-
+import { getUserInfo } from "@/service/auth.service";
+import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
@@ -9,7 +10,13 @@ interface DashboardLayoutProps {
 export default async function DashboardLayout({
   children,
 }: DashboardLayoutProps) {
+  const queryClient = new QueryClient();
+await queryClient.prefetchQuery({
+    queryKey: ["users"],
+    queryFn: getUserInfo,
+  });
   return (
+     <HydrationBoundary state={dehydrate(queryClient)}>
     <div
       className="flex h-screen overflow-hidden"
       style={{ background: "#eceae0" }}
@@ -27,5 +34,18 @@ export default async function DashboardLayout({
         <Footer />
       </div>
     </div>
+      </HydrationBoundary>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
