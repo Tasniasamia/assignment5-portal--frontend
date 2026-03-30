@@ -9,6 +9,7 @@ import {
   FileText, Bell, CreditCard, BookOpen, Heart, MessageSquare,
   HelpCircle, ChevronLeft, ChevronRight, LogOut, Leaf,
   LeafIcon,
+  LigatureIcon,
 } from "lucide-react";
 import { useLogout } from "@/actions/logout.action";
 
@@ -22,7 +23,7 @@ interface NavItem {
 const adminNavItems: NavItem[] = [
   { label: "Dashboard",     href: "/admin/dashboard",     icon: <LayoutDashboard size={16} /> },
   { label: "Category",     href: "/admin/idea-management/category",     icon: <LeafIcon size={16} /> },
-
+{label:"Idea",href:"/admin/idea-management",   icon: <LigatureIcon size={16} /> },
   { label: "Settings",      href: "/admin/settings",      icon: <Settings size={16} /> },
 ];
 
