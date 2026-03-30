@@ -173,61 +173,257 @@
 //   );
 // }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// "use client";
+
+// import { useEffect, useState } from "react";
+// import { useForm } from "@tanstack/react-form";
+// import { useMutation } from "@tanstack/react-query";
+// import ImageUpload from "@/components/common/form/imageUploadForm";
+// import { updateProfileService, deleteProfileImageService } from "@/service/profile.service";
+
+// export default function UpdateProfile({ data }: { data: any }) {
+//   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
+//   const [newFile, setNewFile] = useState<File | null>(null);
+
+//   const [serverError, setServerError] = useState<string | null>(null);
+//   const [success, setSuccess] = useState<string | null>(null);
+
+//   // ─────────────────────────────
+//   // 🔥 Mutation (like login form)
+//   // ─────────────────────────────
+//   const { mutateAsync, isPending } = useMutation({
+//     mutationFn: updateProfileService,
+//   });
+
+//   // ─────────────────────────────
+//   // 🧠 Form Setup
+//   // ─────────────────────────────
+//   const form = useForm({
+//     defaultValues: {
+//       name: "",
+//       contactNumber: "",
+//     },
+
+//     onSubmit: async ({ value }) => {
+//       try {
+//         setServerError(null);
+//         setSuccess(null);
+//    console.log("payload: ",{
+//           ...value,
+//           file: newFile});
+//         const res = await mutateAsync({
+//           ...value,
+//           file: newFile, // 🔥 attach file এখানে
+//         });
+
+//         if (!res.success) {
+//           setServerError(res.message || "Update failed");
+//           return;
+//         }
+
+//         setSuccess("Profile updated successfully!");
+
+//         // 🔥 UI update
+//         if (newFile) {
+//           const preview = URL.createObjectURL(newFile);
+//           setExistingImageUrl(preview);
+//           setNewFile(null);
+//         }
+
+//       } catch (error: any) {
+//         setServerError(error?.message || "Something went wrong");
+//       }
+//     },
+//   });
+
+//   // ─────────────────────────────
+//   // 🔥 Load initial data
+//   // ─────────────────────────────
+//   useEffect(() => {
+//     if (!data) return;
+
+//     const roleData = data.role === "ADMIN" ? data.admin : data.member;
+
+//     form.setFieldValue("name", data.name ?? "");
+//     form.setFieldValue("contactNumber", roleData?.contactNumber ?? "");
+
+//     const photo = roleData?.profilePhoto ?? data.image ?? null;
+//     setExistingImageUrl(photo);
+//   }, [data]);
+
+//   // ─────────────────────────────
+//   // 🧠 Delete existing image
+//   // ─────────────────────────────
+//   const handleDeleteImage = async (url: string) => {
+//     try {
+//       await deleteProfileImageService(url);
+//       setExistingImageUrl(null);
+//     } catch {
+//       setServerError("Failed to delete image");
+//     }
+//   };
+
+//   // ─────────────────────────────
+//   // 🎯 UI
+//   // ─────────────────────────────
+//   return (
+//     <div className="max-w-md mx-auto p-6 space-y-6 border rounded-xl">
+//       <form
+//         onSubmit={(e) => {
+//           e.preventDefault();
+//           e.stopPropagation();
+//           form.handleSubmit();
+//         }}
+//         className="space-y-5"
+//       >
+//         {/* 🔥 Image Upload */}
+//         <div>
+//           <label className="text-sm font-medium">Profile Photo</label>
+
+//           <ImageUpload
+//             multiple={false}
+//             existingUrls={existingImageUrl ? [existingImageUrl] : []}
+//             onChange={(files) => {
+//               if (files.length === 0) setNewFile(null);
+//               else setNewFile(files[0]);
+//             }}
+//             onDeleteExisting={handleDeleteImage}
+//           />
+//         </div>
+
+//         {/* 🔥 Name */}
+//         <form.Field name="name">
+//           {(field) => (
+//             <div>
+//               <label className="text-sm">Full Name</label>
+//               <input
+//                 value={field.state.value}
+//                 onChange={(e) => field.handleChange(e.target.value)}
+//                 className="w-full border p-2 rounded"
+//               />
+//             </div>
+//           )}
+//         </form.Field>
+
+//         {/* 🔥 Contact */}
+//         <form.Field name="contactNumber">
+//           {(field) => (
+//             <div>
+//               <label className="text-sm">Contact Number</label>
+//               <input
+//                 value={field.state.value}
+//                 onChange={(e) => field.handleChange(e.target.value)}
+//                 className="w-full border p-2 rounded"
+//               />
+//             </div>
+//           )}
+//         </form.Field>
+
+//         {/* 🔥 Email (readonly) */}
+//         <div>
+//           <label className="text-sm">Email</label>
+//           <input
+//             value={data?.email}
+//             disabled
+//             className="w-full border p-2 rounded bg-gray-100"
+//           />
+//         </div>
+
+//         {/* 🔥 Alerts */}
+//         {serverError && (
+//           <p className="text-red-500 text-sm">{serverError}</p>
+//         )}
+//         {success && (
+//           <p className="text-green-600 text-sm">{success}</p>
+//         )}
+
+//         {/* 🔥 Submit */}
+//         <form.Subscribe
+//           selector={(state) => [state.canSubmit, state.isSubmitting]}
+//         >
+//           {([canSubmit, isSubmitting]) => (
+//             <button
+//               type="submit"
+//               disabled={!canSubmit || isSubmitting || isPending}
+//               className="w-full bg-blue-600 text-white py-2 rounded"
+//             >
+//               {isSubmitting || isPending ? "Saving..." : "Save Changes"}
+//             </button>
+//           )}
+//         </form.Subscribe>
+//       </form>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
 "use client";
 
 import { useEffect, useState } from "react";
 import { useForm } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ImageUpload from "@/components/common/form/imageUploadForm";
 import { updateProfileService, deleteProfileImageService } from "@/service/profile.service";
+import { useRouter } from "next/navigation";
 
 export default function UpdateProfile({ data }: { data: any }) {
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
   const [newFile, setNewFile] = useState<File | null>(null);
-
+  const [uploadKey, setUploadKey] = useState(0); // ✅ reset key
+  const router=useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-
-  // ─────────────────────────────
-  // 🔥 Mutation (like login form)
-  // ─────────────────────────────
+const queryClient = useQueryClient();
   const { mutateAsync, isPending } = useMutation({
     mutationFn: updateProfileService,
+     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
   });
 
-  // ─────────────────────────────
-  // 🧠 Form Setup
-  // ─────────────────────────────
   const form = useForm({
-    defaultValues: {
-      name: "",
-      contactNumber: "",
-    },
-
+    defaultValues: { name: "", contactNumber: "" },
     onSubmit: async ({ value }) => {
       try {
         setServerError(null);
         setSuccess(null);
-   console.log("payload: ",{
-          ...value,
-          file: newFile});
-        const res = await mutateAsync({
-          ...value,
-          file: newFile, // 🔥 attach file এখানে
-        });
+
+        const res = await mutateAsync({ ...value, file: newFile });
 
         if (!res.success) {
           setServerError(res.message || "Update failed");
           return;
         }
+router.refresh();
 
         setSuccess("Profile updated successfully!");
 
-        // 🔥 UI update
         if (newFile) {
           const preview = URL.createObjectURL(newFile);
           setExistingImageUrl(preview);
           setNewFile(null);
+          setUploadKey((prev) => prev + 1); // ✅ ImageUpload remount → internal state reset
         }
 
       } catch (error: any) {
@@ -236,24 +432,15 @@ export default function UpdateProfile({ data }: { data: any }) {
     },
   });
 
-  // ─────────────────────────────
-  // 🔥 Load initial data
-  // ─────────────────────────────
   useEffect(() => {
     if (!data) return;
-
     const roleData = data.role === "ADMIN" ? data.admin : data.member;
-
     form.setFieldValue("name", data.name ?? "");
     form.setFieldValue("contactNumber", roleData?.contactNumber ?? "");
-
     const photo = roleData?.profilePhoto ?? data.image ?? null;
     setExistingImageUrl(photo);
   }, [data]);
 
-  // ─────────────────────────────
-  // 🧠 Delete existing image
-  // ─────────────────────────────
   const handleDeleteImage = async (url: string) => {
     try {
       await deleteProfileImageService(url);
@@ -263,9 +450,6 @@ export default function UpdateProfile({ data }: { data: any }) {
     }
   };
 
-  // ─────────────────────────────
-  // 🎯 UI
-  // ─────────────────────────────
   return (
     <div className="max-w-md mx-auto p-6 space-y-6 border rounded-xl">
       <form
@@ -276,22 +460,18 @@ export default function UpdateProfile({ data }: { data: any }) {
         }}
         className="space-y-5"
       >
-        {/* 🔥 Image Upload */}
         <div>
           <label className="text-sm font-medium">Profile Photo</label>
-
           <ImageUpload
+            key={uploadKey} // ✅ save হলে remount → previews/files clear
             multiple={false}
             existingUrls={existingImageUrl ? [existingImageUrl] : []}
-            onChange={(files) => {
-              if (files.length === 0) setNewFile(null);
-              else setNewFile(files[0]);
-            }}
+            onChange={(files) => setNewFile(files[0] ?? null)}
             onDeleteExisting={handleDeleteImage}
           />
         </div>
 
-        {/* 🔥 Name */}
+        {/* বাকি fields same থাকবে */}
         <form.Field name="name">
           {(field) => (
             <div>
@@ -305,7 +485,6 @@ export default function UpdateProfile({ data }: { data: any }) {
           )}
         </form.Field>
 
-        {/* 🔥 Contact */}
         <form.Field name="contactNumber">
           {(field) => (
             <div>
@@ -319,7 +498,6 @@ export default function UpdateProfile({ data }: { data: any }) {
           )}
         </form.Field>
 
-        {/* 🔥 Email (readonly) */}
         <div>
           <label className="text-sm">Email</label>
           <input
@@ -329,18 +507,10 @@ export default function UpdateProfile({ data }: { data: any }) {
           />
         </div>
 
-        {/* 🔥 Alerts */}
-        {serverError && (
-          <p className="text-red-500 text-sm">{serverError}</p>
-        )}
-        {success && (
-          <p className="text-green-600 text-sm">{success}</p>
-        )}
+        {serverError && <p className="text-red-500 text-sm">{serverError}</p>}
+        {success && <p className="text-green-600 text-sm">{success}</p>}
 
-        {/* 🔥 Submit */}
-        <form.Subscribe
-          selector={(state) => [state.canSubmit, state.isSubmitting]}
-        >
+        <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
           {([canSubmit, isSubmitting]) => (
             <button
               type="submit"

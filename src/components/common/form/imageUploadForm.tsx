@@ -514,7 +514,7 @@ export default function ImageUpload({
         {existing.map((url, i) => (
           <div key={i} className="relative">
             <img src={url} className="w-20 h-20 object-cover rounded" />
-            <button
+            <button type="button"
               onClick={() => removeExisting(url)}
               className="absolute top-0 right-0 bg-red-500 text-white text-xs px-1 rounded"
             >
@@ -527,7 +527,7 @@ export default function ImageUpload({
         {previews.map((url, i) => (
           <div key={i} className="relative">
             <img src={url} className="w-8 h-8 object-cover rounded" />
-            <button
+            <button type="button"
               onClick={() => removeNew(i)}
               className="absolute top-0 right-0 bg-black text-white text-xs px-1 rounded"
             >

@@ -35,7 +35,7 @@ export async function getUserInfo() {
   try {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value;
-    console.log("accessToken", accessToken);
+    // console.log("accessToken", accessToken);
 
     if (!accessToken) {
       return null;
@@ -67,7 +67,7 @@ export async function getUserInfo() {
         },
       }
     );
-    console.log("res", res);
+    // console.log("res", res);
 
     if (!res.ok) {
       console.error(
@@ -79,7 +79,7 @@ export async function getUserInfo() {
     }
 
     const { data } = await res.json();
-    console.log("getUserInfo data", data);
+    // console.log("getUserInfo data", data);
 
     return data;
   } catch (error) {
@@ -93,7 +93,7 @@ export async function getUserInfo() {
 export async function getUserInfoMiddleware(req: NextRequest) {
   try {
       const accessToken = req.cookies.get("accessToken")?.value;
-      console.log("accessToken",accessToken);
+      // console.log("accessToken",accessToken);
       if (!accessToken) return null;
       // Token verify করুন আগে
       const verified = await verifyToken(

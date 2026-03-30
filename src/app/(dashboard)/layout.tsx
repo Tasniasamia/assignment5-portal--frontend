@@ -13,7 +13,7 @@ interface DashboardLayoutProps {
 export default async function DashboardLayout({ children }: DashboardLayoutProps) {
   const data=await getUserInfo();
   let role =data?.role === "ADMIN" ? "admin":data?.role==="MEMBER"?"member":"member"
-  console.log("data",data);
+  // console.log("data",data);
 
   
   

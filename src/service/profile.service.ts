@@ -1,6 +1,7 @@
 "use server";
 
 import { httpClient } from "@/lib/axios/httpClient";
+import { revalidatePath } from "next/cache";
 
 // ─────────────────────────────────────────────
 // 🔹 Types
@@ -19,6 +20,7 @@ export const updateProfileService = async (
   payload: UpdateProfilePayload
 ) => {
   try {
+    console.log("hit here",payload);
     const formData = new FormData();
 
     // 📌 JSON data
@@ -47,7 +49,10 @@ console.log("formdata",formData);
       "/auth/update-profile",
       formData
     );
- console.log("response",response)
+    if (response.success) {
+  revalidatePath("/my-profile"); // তোমার actual page path
+}
+//  console.log("response",response)
     return response;
   } catch (error: any) {
     console.error("Update Profile Error:", error?.response?.data);
@@ -65,12 +70,12 @@ export const deleteProfileImageService = async (
     console.log("filePath",filePath);
     // 🔥 JSON based delete (recommended)
     const response = await httpClient.post<any>("/auth/delete", {
-      filePath,
+      filePath
     });
 
     return response;
   } catch (error: any) {
-    console.error("Delete Image Error:", error?.response?.data);
+    // console.error("Delete Image Error:", error?.response?.data);
     throw error;
   }
 };
