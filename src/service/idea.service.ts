@@ -37,7 +37,7 @@ export interface TIdeaQueryParams {
   categoryId?: string;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
-  type?:string
+  type?:string|undefined
 [key: string]: string | number | undefined;
 }
 
@@ -61,6 +61,13 @@ console.log("query",query)
   if (!response.success) throw new Error("Failed to fetch ideas");
   return response;
 };
+
+
+
+
+
+
+
 
 
 
@@ -118,9 +125,15 @@ console.log("query",query)
 
 // ✅ GET IDEA BY ID
 export const getIdeaById = async (id: string) => {
+  try{
   const response = await httpClient.get<TIdea>(`/idea/${id}`);
-  if (!response.success) throw new Error("Failed to fetch idea");
   return response;
+  }
+  catch (error: any) {
+    const message = error?.response?.data?.message  || "Failed to get idea";
+    // console.log("message",error)
+    throw new Error(message);
+  }
 };
 
 // ✅ CREATE IDEA (multipart/form-data)

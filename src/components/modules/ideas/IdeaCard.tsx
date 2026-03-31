@@ -1,5 +1,8 @@
 "use client";
 
+import { useState } from "react";
+import IdeaDetailModal from "./IdeaDetailModal";
+
 
 
 export interface IIdea {
@@ -10,7 +13,7 @@ export interface IIdea {
   proposedSolution: string;
   images: string[];
   status: string;
-  type: "FREE" | "PAID";
+  type: "FREE" | "PAID"|string|undefined;
   price?: number;
   isPaid?: boolean;
   viewCount: number;
@@ -27,10 +30,12 @@ interface IdeaCardProps {
 }
 
 export default function IdeaCard({ idea, onClick }: IdeaCardProps) {
+  const [selectedIdea,setSelectedIdea] = useState<IIdea | null>(null);
   return (
+    <>
     <div
-      onClick={onClick}
-      className="bg-white rounded-2xl overflow-hidden border border-green-100 cursor-pointer
+      
+      className="bg-white rounded-2xl overflow-hidden border border-green-100 
         transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-green-100
         hover:border-green-300 group"
     >
@@ -42,7 +47,7 @@ export default function IdeaCard({ idea, onClick }: IdeaCardProps) {
             alt={idea.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
-          {idea.type === "PAID" && (
+          {idea?.type === "PAID" && (
             <div className="absolute top-2 right-2 bg-amber-400 text-amber-900 text-xs font-bold px-2.5 py-1 rounded-full shadow">
               ৳ {idea.price}
             </div>
@@ -61,7 +66,8 @@ export default function IdeaCard({ idea, onClick }: IdeaCardProps) {
 
       <div className="p-4">
         {/* Badges */}
-        <div className="flex gap-1.5 mb-3 flex-wrap">
+        <div className="flex  mb-3 justify-between items-start">
+          <div className="flex gap-1.5 items-center">
           {idea.category?.name && (
             <span className="bg-green-50 text-green-700 border border-green-200 text-[10px] font-semibold px-2.5 py-0.5 rounded-full">
               {idea.category.name}
@@ -76,10 +82,20 @@ export default function IdeaCard({ idea, onClick }: IdeaCardProps) {
           >
             {idea.type}
           </span>
+          </div>
+           {idea.type === "PAID"  && (      <span
+            className={`text-[12px] cursor-pointer font-semibold px-2.5 py-0.5 rounded-full border 
+                 text-green-50 bg-green-700 border-green-200
+            }`}
+            onClick={()=>{setSelectedIdea(idea)}}
+          >
+           Pay Now
+          </span>)}
+          
         </div>
 
         {/* Title */}
-        <h3 className="font-bold text-green-900 text-sm leading-snug mb-2 line-clamp-2 group-hover:text-green-700 transition-colors">
+        <h3 onClick={onClick} className="font-bold cursor-pointer text-green-900 text-sm leading-snug mb-2 line-clamp-2 group-hover:text-green-700 transition-colors">
           {idea.title}
         </h3>
 
@@ -134,5 +150,14 @@ export default function IdeaCard({ idea, onClick }: IdeaCardProps) {
         </div>
       </div>
     </div>
+    {
+  selectedIdea && (
+    <IdeaDetailModal
+          idea={ selectedIdea }
+  onClose = {() => setSelectedIdea(null)
+}
+        />
+      )}
+    </>
   );
 }
