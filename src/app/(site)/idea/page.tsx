@@ -29,15 +29,15 @@ export default async function Page({ searchParams }: PageProps) {
 
   const params = {
     page: Number(searchParams?.page ?? 1),
-    limit: Number(searchParams?.limit ?? 6),
+    limit: Number(searchParams?.limit ?? 10),
     searchTerm: searchParams?.searchTerm ?? "",
     categoryId: searchParams?.categoryId,
-    type: searchParams?.type,
     sortBy: searchParams?.sortBy ?? "createdAt",
     sortOrder: "desc" as const,
     status: "APPROVED",
     isPublished: true,
     isDeleted: false,
+    type:searchParams?.type ?? "",
   };
 
   // Parallel prefetch — server side

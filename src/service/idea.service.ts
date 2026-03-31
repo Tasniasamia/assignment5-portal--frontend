@@ -37,6 +37,7 @@ export interface TIdeaQueryParams {
   categoryId?: string;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
+  type?:string
 [key: string]: string | number | undefined;
 }
 
@@ -50,6 +51,8 @@ export const getAllIdeas = async (params: TIdeaQueryParams = {}) => {
   if (params.categoryId) query.set("categoryId", params.categoryId);
   if (params.sortBy) query.set("sortBy", params.sortBy);
   if (params.sortOrder) query.set("sortOrder", params.sortOrder);
+    if (params.type) query.set("type", params.type);
+
 console.log("query",query)
   const response = await httpClient.get<{ data: TIdea[]; meta: any }>(
     `/idea?${query.toString()}`
@@ -93,6 +96,7 @@ export const getAllRoleWiseIdeas = async (params: TIdeaQueryParams = {}) => {
   if (params.categoryId) query.set("categoryId", params.categoryId);
   if (params.sortBy) query.set("sortBy", params.sortBy);
   if (params.sortOrder) query.set("sortOrder", params.sortOrder);
+
 console.log("query",query)
   const response = await httpClient.get<{ data: TIdea[]; meta: any }>(
     `/idea/roleWise?${query.toString()}`

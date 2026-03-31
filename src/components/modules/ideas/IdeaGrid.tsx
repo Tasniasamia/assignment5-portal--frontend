@@ -46,8 +46,8 @@ export default function IdeaGrid() {
   const page = Number(searchParams.get("page") ?? 1);
   const searchTerm = searchParams.get("searchTerm") ?? "";
   const categoryId = searchParams.get("categoryId") ?? "";
-  const limit = searchParams.get("limit") ?? "6";
-
+  const limit :number|string = searchParams.get("limit") ?? 10;
+  const type:string=searchParams.get("type") ?? "";
   const sortBy = searchParams.get("sortBy") ?? "createdAt";
 
   const [localSearch, setLocalSearch] = useState(searchTerm);
@@ -87,6 +87,7 @@ export default function IdeaGrid() {
     status: "APPROVED",
     isPublished: true,
     isDeleted: false,
+    type:"FREE" || "PAID"
   };
 
   const { data: ideasData, isLoading } = useQuery({
@@ -111,6 +112,7 @@ export default function IdeaGrid() {
   // ── search debounce ──────────────────────────────────────
   const handleSearch = (val: string) => {
     setLocalSearch(val);
+
     if (searchTimer.current) clearTimeout(searchTimer.current);
     searchTimer.current = setTimeout(() => {
       updateParams({ searchTerm: val });
@@ -139,13 +141,9 @@ export default function IdeaGrid() {
     < input
   value = { localSearch }
   onChange = {(e) =>
-  handleSearch(
-    ["free", "paid"].includes(e.target.value)
-      ? e.target.value.toUpperCase()
-      : e.target.value
-  )
+  handleSearch(e.target.value)
 } placeholder = "Search ideas..."
-className = "w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-green-200 focus:outline-none focus:border-green-400 placeholder-gray-400 bg-green-50/50"
+className = "w-full pl-9 pr-2 py-2 text-sm rounded-lg border border-green-200 focus:outline-none focus:border-green-400 placeholder-gray-400 bg-green-50/50"
   />
   </div>
 {
@@ -167,7 +165,7 @@ className = "w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-green-200 fo
 <div className="hidden md:block h-6 w-px bg-green-100" />
 
   {/* Category */ }
-  < div className = "relative" >
+  < div className = "flex gap-4" >
     <select
 value={ categoryId }
 onChange = {(e) => updateParams({ categoryId: e.target.value })}
@@ -178,6 +176,16 @@ className = "appearance-none pl-3 pr-8 py-2.5 text-sm rounded-xl border border-g
     <option key= { cat.id } value = { cat.id } > { cat.name } </option>
   ))
 }
+</select>
+    <select
+value={type}
+onChange = {(e) => updateParams({ type: e.target.value })}
+className = "appearance-none pl-3 pr-8 py-2.5 text-sm rounded-xl border border-green-200" >
+  <option value="" > All Types </option>
+
+    <option  value = "FREE" > FREE</option>
+  
+
 </select>
   < svg className = "absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-green-500 pointer-events-none"
 fill = "none" stroke = "currentColor" viewBox = "0 0 24 24" >
@@ -273,11 +281,11 @@ className = "hover:text-red-500 transition-colors" >✕</button>
 {
   meta && (
     <Pagination
-          page={ meta.page || 1}
-  limit = { meta?.limit || 8 }
-  total = { meta.total || 0 }
-  totalPages = { meta.totalPages || 0}
-    />
+          page={ meta.page || 1 }
+  limit = { meta?.limit || 10}
+total = { meta.total || 0 }
+totalPages = { meta.totalPages || 0 }
+  />
       )
 }
 
