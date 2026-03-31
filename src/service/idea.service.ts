@@ -32,7 +32,7 @@ export interface TIdea {
 export interface TIdeaQueryParams {
   page?: number;
   limit?: number;
-  search?: string;
+  searchTerm?: string;
   status?: string;
   categoryId?: string;
   sortBy?: string;
@@ -45,15 +45,16 @@ export const getAllAdminIdeas = async (params: TIdeaQueryParams = {}) => {
   const query = new URLSearchParams();
   if (params.page) query.set("page", String(params.page));
   if (params.limit) query.set("limit", String(params.limit));
-  if (params.search) query.set("search", params.search);
+  if (params.searchTerm) query.set("searchTerm", params.searchTerm);
   if (params.status) query.set("status", params.status);
   if (params.categoryId) query.set("categoryId", params.categoryId);
   if (params.sortBy) query.set("sortBy", params.sortBy);
   if (params.sortOrder) query.set("sortOrder", params.sortOrder);
-
+console.log("query",query)
   const response = await httpClient.get<{ data: TIdea[]; meta: any }>(
     `/idea/admin?${query.toString()}`
   );
+  
   if (!response.success) throw new Error("Failed to fetch ideas");
   return response;
 };

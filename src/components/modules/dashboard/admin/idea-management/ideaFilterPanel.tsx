@@ -27,7 +27,10 @@ export default function IdeaFilterPanel({ categories }: IdeaFilterPanelProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
+const categoryOptions = categories.map((c: { id: string; name: string }) => ({
+  label: c.name,
+  value: c.id,
+}));
   const updateParam = useCallback(
     (key: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString());
@@ -47,7 +50,7 @@ export default function IdeaFilterPanel({ categories }: IdeaFilterPanelProps) {
       {/* Status Filter */}
       <Select
         value={searchParams.get("status") ?? "all"}
-        onValueChange={(val) => updateParam("status", val)}
+        onValueChange={(val :any) => updateParam("status", val)}
       >
         <SelectTrigger className="w-[140px] h-9 bg-white text-sm">
           <SelectValue placeholder="All Status" />
@@ -60,24 +63,25 @@ export default function IdeaFilterPanel({ categories }: IdeaFilterPanelProps) {
           ))}
         </SelectContent>
       </Select>
+  
+ 
+  
+       <Select value={searchParams.get("categoryId") ?? "all"} onValueChange={(val:any) => updateParam("categoryId", val)} >
+              <SelectTrigger className="bg-white w-full">
+              <SelectValue placeholder="All Categories">
+  {categoryOptions.find((o) => o.value === (searchParams.get("categoryId") ?? "all"))?.label ?? "All Categories"}
+</SelectValue>
+              </SelectTrigger>
+              <SelectContent className="bg-white">
+                {categoryOptions?.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-      {/* Category Filter */}
-      <Select
-        value={searchParams.get("categoryId") ?? "all"}
-        onValueChange={(val) => updateParam("categoryId", val)}
-      >
-        <SelectTrigger className="w-[160px] h-9 bg-white text-sm">
-          <SelectValue placeholder="All Categories" />
-        </SelectTrigger>
-        <SelectContent className="bg-white">
-          <SelectItem value="all">All Categories</SelectItem>
-          {categories.map((c) => (
-            <SelectItem key={c.id} value={c.id}>
-              {c.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
+ </div>
   );
 }
+

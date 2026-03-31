@@ -13,7 +13,7 @@ interface PageProps {
   searchParams: {
     page?: string;
     limit?: string;
-    search?: string;
+    searchTerm?: string;
     status?: string;
     categoryId?: string;
     sortBy?: string;
@@ -26,7 +26,7 @@ export default async function Page({ searchParams }: PageProps) {
   const params = {
     page: Number(searchParams?.page ?? 1),
     limit: Number(searchParams?.limit ?? 10),
-    search: searchParams?.search,
+    searchTerm: searchParams.searchTerm ?? "",
     status: searchParams?.status,
     categoryId: searchParams?.categoryId,
     sortBy: searchParams?.sortBy,

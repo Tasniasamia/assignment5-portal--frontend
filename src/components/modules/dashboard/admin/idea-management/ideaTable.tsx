@@ -28,7 +28,7 @@ export default function IdeaTable() {
   const params: TIdeaQueryParams = {
     page: Number(searchParams.get("page") ?? 1),
     limit: Number(searchParams.get("limit") ?? 10),
-    search: searchParams.get("search") ?? undefined,
+    searchTerm: searchParams.get("searchTerm") ?? undefined,
     status: searchParams.get("status") ?? undefined,
     categoryId: searchParams.get("categoryId") ?? undefined,
     sortBy: searchParams.get("sortBy") ?? undefined,
