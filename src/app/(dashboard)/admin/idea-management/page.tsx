@@ -23,15 +23,14 @@ interface PageProps {
 
 export default async function Page({ searchParams }: PageProps) {
   const queryClient = new QueryClient();
-
   const params = {
-    page: Number(searchParams.page ?? 1),
-    limit: Number(searchParams.limit ?? 10),
-    search: searchParams.search,
-    status: searchParams.status,
-    categoryId: searchParams.categoryId,
-    sortBy: searchParams.sortBy,
-    sortOrder: searchParams.sortOrder as "asc" | "desc" | undefined,
+    page: Number(searchParams?.page ?? 1),
+    limit: Number(searchParams?.limit ?? 10),
+    search: searchParams?.search,
+    status: searchParams?.status,
+    categoryId: searchParams?.categoryId,
+    sortBy: searchParams?.sortBy,
+    sortOrder: searchParams?.sortOrder as "asc" | "desc" | undefined,
     isDeleted:false
   };
 
@@ -39,7 +38,7 @@ export default async function Page({ searchParams }: PageProps) {
   await Promise.all([
     queryClient.prefetchQuery({
       queryKey: ["admin-ideas", params],
-      queryFn: () => getAllAdminIdeas(params),
+      queryFn: () => getAllAdminIdeas(params as any),
     }),
     queryClient.prefetchQuery({
       queryKey: ["category"],
@@ -49,7 +48,7 @@ export default async function Page({ searchParams }: PageProps) {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="p-6 space-y-4">
+      <div className="space-y-4">
         <div>
           <h1 className="text-2xl font-bold">Idea Management</h1>
           <p className="text-sm text-muted-foreground mt-1">

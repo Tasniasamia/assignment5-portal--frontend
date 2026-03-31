@@ -33,7 +33,6 @@ export default function IdeaTable() {
     categoryId: searchParams.get("categoryId") ?? undefined,
     sortBy: searchParams.get("sortBy") ?? undefined,
     sortOrder: (searchParams.get("sortOrder") as any) ?? undefined,
-        isDeleted:false
 
   };
 
@@ -74,21 +73,21 @@ export default function IdeaTable() {
         <button
           type="button"
           onClick={() => setStatusAction({ idea: row.original, action: "approve" })}
-          className="text-xs px-2 py-1 rounded bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors"
+          className="text-xs cursor-pointer px-2 py-1 rounded bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors"
         >
           Approve
         </button>
         <button
           type="button"
           onClick={() => setStatusAction({ idea: row.original, action: "under-review" })}
-          className="text-xs px-2 py-1 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
+          className="text-xs cursor-pointer px-2 py-1 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
         >
           Review
         </button>
         <button
           type="button"
           onClick={() => setStatusAction({ idea: row.original, action: "reject" })}
-          className="text-xs px-2 py-1 rounded bg-red-50 text-red-700 hover:bg-red-100 transition-colors"
+          className="text-xs cursor-pointer px-2 py-1 rounded bg-red-50 text-red-700 hover:bg-red-100 transition-colors"
         >
           Reject
         </button>

@@ -25,6 +25,7 @@ import ImageUpload from "@/components/common/form/imageUploadForm";
 import { toast } from "sonner";
 import { createIdea } from "@/service/idea.service";
 import { getAllCategory } from "@/service/idea.catetogory.service";
+import AppSelect from "@/components/common/form/AppSelect";
 
 export default function AddIdeaModal() {
   const [open, setOpen] = useState(false);
@@ -49,6 +50,7 @@ export default function AddIdeaModal() {
       description: "",
       categoryId: "",
       price: "",
+       isPublished: false,
     },
     onSubmit: async ({ value }) => {
       if (newFiles.length === 0) {
@@ -65,6 +67,8 @@ export default function AddIdeaModal() {
         description: value.description,
         categoryId: value.categoryId,
         type: ideaType,
+        isPublished: value.isPublished,
+        
         ...(ideaType === "PAID" && { price: Number(value.price) }),
       };
 
@@ -90,10 +94,13 @@ export default function AddIdeaModal() {
       toast.error(error?.message || "Failed to create idea");
     },
   });
-
+const categoryOptions = categories.map((c: { id: string; name: string }) => ({
+  label: c.name,
+  value: c.id,
+}));
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="inline-flex cursor-pointer items-center gap-2 rounded-md text-sm font-medium bg-primary text-white hover:bg-primary/90 h-9 px-4">
+      <DialogTrigger className="inline-flex cursor-pointer items-center gap-2 rounded-md text-sm font-medium bg-primary bg-white hover:bg-primary/90 h-9 px-4">
         <Plus className="h-4 w-4" />
         Add Idea
       </DialogTrigger>
@@ -122,46 +129,33 @@ export default function AddIdeaModal() {
 
           {/* Category + Type */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <form.Field
-              name="categoryId"
-              validators={{ onChange: ({ value }) => !value ? "Category is required" : undefined }}
-            >
-              {(field) => (
-                <div className="space-y-1.5">
-                  <Label>Category <span className="text-red-500">*</span></Label>
-                  <Select
-                    value={field.state.value}
-                    onValueChange={(val) => field.handleChange(val)}
-                  >
-                    <SelectTrigger className="bg-white">
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white">
-                      {categories.map((c: any) => (
-                        <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {field.state.meta.errors?.[0] && (
-                    <p className="text-xs text-red-500">{field.state.meta.errors[0]}</p>
-                  )}
-                </div>
-              )}
-            </form.Field>
-
-            <div className="space-y-1.5">
-              <Label>Type</Label>
-              <Select value={ideaType} onValueChange={(v) => setIdeaType(v as any)}>
-                <SelectTrigger className="bg-white">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-white">
-                  <SelectItem value="FREE">Free</SelectItem>
-                  <SelectItem value="PAID">Paid</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+           <form.Field
+             name="categoryId"
+             validators={{ onChange: ({ value }) => !value ? "Required" : undefined }}
+           >
+             {(field) => (
+               <AppSelect
+                 label="Category"
+                 placeholder="Select category"
+                 options={categoryOptions}
+                 value={field.state.value}
+                 onChange={field.handleChange}
+                 required
+                 error={field.state.meta.errors?.[0]}
+               />
+             )}
+           </form.Field>
+         
+           <AppSelect
+             label="Type"
+             options={[
+               { label: "Free", value: "FREE" },
+               { label: "Paid", value: "PAID" },
+             ]}
+             value={ideaType}
+             onChange={(v) => setIdeaType(v as "FREE" | "PAID")}
+           />
+         </div>
 
           {/* Price — only if PAID */}
           {ideaType === "PAID" && (
@@ -216,12 +210,27 @@ export default function AddIdeaModal() {
               onDeleteExisting={() => {}}
             />
           </div>
-
+<form.Field name="isPublished">
+  {(field) => (
+    <div className="flex items-center gap-2">
+      <input
+        type="checkbox"
+        id="isPublished"
+        checked={field.state.value}
+        onChange={(e) => field.handleChange(e.target.checked)}
+        className="h-4 w-4 rounded border-gray-300 accent-primary cursor-pointer"
+      />
+      <Label htmlFor="isPublished" className="cursor-pointer">
+        Publish this idea
+      </Label>
+    </div>
+  )}
+</form.Field>
           <div className="flex justify-end gap-2 pt-1">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" variant="outline" disabled={isPending}>
               {isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
               Create Idea
             </Button>

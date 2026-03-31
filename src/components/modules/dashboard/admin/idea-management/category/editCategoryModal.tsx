@@ -55,6 +55,7 @@ export default function EditCategoryModal({
         });
 
         if (!res.success) {
+          console.log("Update failed:", res);
           toast.error(res.message || "Update failed");
           return;
         }

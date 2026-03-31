@@ -67,22 +67,24 @@ export const getIdeaById = async (id: string) => {
 
 // ✅ CREATE IDEA (multipart/form-data)
 export const createIdea = async (formData: FormData) => {
+  try{
   const response = await httpClient.postForm<TIdea>("/idea", formData);
-  if (!response.success) throw new Error("Failed to create idea");
   return response;
+    } catch (error: any) {
+    const message = error?.response?.data?.message || error?.message || "Failed to update idea";
+    throw new Error(message);
+  }
 };
 
 // ✅ UPDATE IDEA
-export const updateIdea = async ({
-  id,
-  formData,
-}: {
-  id: string;
-  formData: FormData;
-}) => {
-  const response = await httpClient.patchForm<TIdea>(`/idea/${id}`, formData);
-  if (!response.success) throw new Error("Failed to update idea");
-  return response;
+export const updateIdea = async ({ id, formData }: { id: string; formData: FormData }) => {
+  try {
+    const response = await httpClient.patchForm<TIdea>(`/idea/${id}`, formData);
+    return response;
+  } catch (error: any) {
+    const message = error?.response?.data?.message || error?.message || "Failed to update idea";
+    throw new Error(message);
+  }
 };
 
 // ✅ DELETE IDEA
@@ -94,16 +96,26 @@ export const deleteIdea = async (id: string) => {
 
 // ✅ APPROVE IDEA
 export const approveIdea = async (id: string) => {
+  try{
   const response = await httpClient.patch<any>(`/idea/${id}/approve`, {});
-  if (!response.success) throw new Error("Failed to approve idea");
+  // if (!response.success) throw new Error("Failed to approve idea");
   return response;
+    } catch (error: any) {
+    const message = error?.response?.data?.message || error?.message || "Failed to update idea";
+    throw new Error(message);
+  }
 };
 
 // ✅ UNDER REVIEW
 export const underReviewIdea = async (id: string) => {
+  try{
   const response = await httpClient.patch<any>(`/idea/${id}/under-review`, {});
-  if (!response.success) throw new Error("Failed to update status");
+  // if (!response.success) throw new Error("Failed to update status");
   return response;
+    } catch (error: any) {
+    const message = error?.response?.data?.message || error?.message || "Failed to update idea";
+    throw new Error(message);
+  }
 };
 
 // ✅ REJECT IDEA
@@ -114,9 +126,16 @@ export const rejectIdea = async ({
   id: string;
   rejectionFeedback: string;
 }) => {
+  try{
   const response = await httpClient.patch<any>(`/idea/${id}/reject`, {
     rejectionFeedback,
   });
-  if (!response.success) throw new Error("Failed to reject idea");
+  // if (!response.success) throw new Error("Failed to reject idea");
   return response;
+  } catch (error: any) {
+    const message = error?.response?.data?.message || error?.message || "Failed to update idea";
+    throw new Error(message);
+  }
+
+
 };

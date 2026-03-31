@@ -24,6 +24,7 @@ import ImageUpload from "@/components/common/form/imageUploadForm";
 import { toast } from "sonner";
 import { getIdeaById, updateIdea, TIdea } from "@/service/idea.service";
 import { getAllCategory } from "@/service/idea.catetogory.service";
+import AppSelect from "@/components/common/form/AppSelect";
 
 interface EditIdeaModalProps {
   idea: TIdea;
@@ -40,12 +41,12 @@ export default function EditIdeaModal({ idea, open, onClose }: EditIdeaModalProp
 
   // ✅ fetch latest idea
   const { data: ideaData, isLoading } = useQuery({
-    queryKey: ["idea", idea?.id],
+    queryKey: ["admin-ideas", idea?.id],
     queryFn: () => getIdeaById(idea?.id),
     enabled: open && !!idea?.id,
   });
   const current = ideaData?.data ?? idea;
-
+console.log("current idea data",current);
   // ✅ fetch categories
   const { data: categoryData } = useQuery({
     queryKey: ["category"],
@@ -66,31 +67,36 @@ export default function EditIdeaModal({ idea, open, onClose }: EditIdeaModalProp
       description: "",
       categoryId: "",
       price: "",
+      isPublished: false
     },
     onSubmit: async ({ value }) => {
       try {
         const formData = new FormData();
         const data = {
+          status:current.status,
           title: value.title,
           problemStatement: value.problemStatement,
           proposedSolution: value.proposedSolution,
           description: value.description,
           categoryId: value.categoryId,
           type: ideaType,
-          existingImages: existingUrls, // ✅ remaining existing images
+          existingImages: existingUrls, 
+            isPublished: value.isPublished,
           ...(ideaType === "PAID" && { price: Number(value.price) }),
         };
+
         formData.append("data", JSON.stringify(data));
         newFiles.forEach((file) => formData.append("images", file));
 
         const res = await mutateAsync({ id: idea.id, formData });
+        console.log("res", res);
         if (!res.success) {
-          toast.error(res.message || "Update failed");
+          toast.error(res?.message || "Update failed");
           return;
         }
-        toast.success("Idea updated successfully!");
+        toast.success(res?.message ?? "Idea updated successfully!");
         queryClient.invalidateQueries({ queryKey: ["admin-ideas"] });
-        queryClient.invalidateQueries({ queryKey: ["idea", idea.id] });
+        queryClient.invalidateQueries({ queryKey: ["admin-ideas", idea.id] });
         onClose();
       } catch (error: any) {
         toast.error(error?.message || "Something went wrong");
@@ -99,21 +105,25 @@ export default function EditIdeaModal({ idea, open, onClose }: EditIdeaModalProp
   });
 
   // ✅ reset form with fetched data
-  useEffect(() => {
-    if (current) {
-      form.reset({
-        title: current.title ?? "",
-        problemStatement: current.problemStatement ?? "",
-        proposedSolution: current.proposedSolution ?? "",
-        description: current.description ?? "",
-        categoryId: current.categoryId ?? "",
-        price: current.price ? String(current.price) : "",
-      });
-      setIdeaType(current.type ?? "FREE");
-      setExistingUrls(current.images ?? []);
-    }
-  }, [current]);
-
+// ✅ reset form with fetched data
+useEffect(() => {
+  if (current) {
+    form.setFieldValue("title", current.title ?? "");
+    form.setFieldValue("problemStatement", current.problemStatement ?? "");
+    form.setFieldValue("proposedSolution", current.proposedSolution ?? "");
+    form.setFieldValue("description", current.description ?? "");
+    form.setFieldValue("categoryId", current.categoryId ?? "");
+    form.setFieldValue("price", current.price ? String(current.price) : "");
+     form.setFieldValue("isPublished", current.isPublished ?? false);
+    setIdeaType(current.type ?? "FREE");
+    setExistingUrls(current.images ?? []);
+  }
+}, [current]);
+const categoryOptions = categories.map((c: { id: string; name: string }) => ({
+  label: c.name,
+  value: c.id,
+}));
+console.log("categories",categories);
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded-xl bg-white">
@@ -134,39 +144,37 @@ export default function EditIdeaModal({ idea, open, onClose }: EditIdeaModalProp
             className="space-y-4 pt-2"
           >
             <form.Field name="title" validators={{ onChange: ({ value }) => !value ? "Required" : undefined }}>
-              {(field) => <AppField field={field} label="Title" placeholder="Enter idea title" />}
+              {(field) => <AppField field={field} label="Title"  />}
             </form.Field>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <form.Field name="categoryId" validators={{ onChange: ({ value }) => !value ? "Required" : undefined }}>
-                {(field) => (
-                  <div className="space-y-1.5">
-                    <Label>Category <span className="text-red-500">*</span></Label>
-                    <Select value={field.state.value} onValueChange={field.handleChange}>
-                      <SelectTrigger className="bg-white">
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white">
-                        {categories.map((c: any) => (
-                          <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-              </form.Field>
+   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <form.Field
+    name="categoryId"
+    validators={{ onChange: ({ value }) => !value ? "Required" : undefined }}
+  >
+    {(field) => (
+      <AppSelect
+        label="Category"
+        placeholder="Select category"
+        options={categoryOptions}
+        value={field.state.value}
+        onChange={field.handleChange}
+        required
+        error={field.state.meta.errors?.[0]}
+      />
+    )}
+  </form.Field>
 
-              <div className="space-y-1.5">
-                <Label>Type</Label>
-                <Select value={ideaType} onValueChange={(v) => setIdeaType(v as any)}>
-                  <SelectTrigger className="bg-white"><SelectValue /></SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="FREE">Free</SelectItem>
-                    <SelectItem value="PAID">Paid</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+  <AppSelect
+    label="Type"
+    options={[
+      { label: "Free", value: "FREE" },
+      { label: "Paid", value: "PAID" },
+    ]}
+    value={ideaType}
+    onChange={(v) => setIdeaType(v as "FREE" | "PAID")}
+  />
+</div>
 
             {ideaType === "PAID" && (
               <form.Field name="price" validators={{ onChange: ({ value }) => !value ? "Required" : undefined }}>
@@ -198,10 +206,25 @@ export default function EditIdeaModal({ idea, open, onClose }: EditIdeaModalProp
                 }
               />
             </div>
-
+<form.Field name="isPublished">
+  {(field) => (
+    <div className="flex items-center gap-2">
+      <input
+        type="checkbox"
+        id="isPublished"
+        checked={field.state.value}
+        onChange={(e) => field.handleChange(e.target.checked)}
+        className="h-4 w-4 rounded border-gray-300 accent-primary cursor-pointer"
+      />
+      <Label htmlFor="isPublished" className="cursor-pointer">
+        Publish this idea
+      </Label>
+    </div>
+  )}
+</form.Field>
             <div className="flex justify-end gap-2 pt-1">
-              <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-              <Button type="submit" disabled={isPending}>
+              <Button type="button" variant="outline" onClick={onClose} className="cursor-pointer">Cancel</Button>
+              <Button type="submit" variant="outline" disabled={isPending} className="cursor-pointer">
                 {isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
                 Save Changes
               </Button>

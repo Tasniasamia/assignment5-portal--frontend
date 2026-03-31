@@ -293,7 +293,8 @@ const httpPost = async <TData>(
     });
     return response.data;
   } catch (error: any) {
-    console.error("Backend error response:", error?.response?.data);
+    return error?.response?.data;
+    // console.error("Backend error response:", error?.response?.data);
     throw error;
   }
 };
