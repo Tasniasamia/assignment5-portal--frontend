@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'; 
 import { getAllCategory } from '@/service/idea.catetogory.service'
 import {
     dehydrate,
@@ -5,6 +6,7 @@ import {
     QueryClient,
   } from '@tanstack/react-query'
 import CategoryTable from '@/components/modules/dashboard/admin/idea-management/category/categoryTable'
+import { Suspense } from 'react';
   export default async function Page() {
     const queryClient = new QueryClient()
     await queryClient.prefetchQuery({
@@ -14,7 +16,11 @@ import CategoryTable from '@/components/modules/dashboard/admin/idea-management/
   
     return (
       <HydrationBoundary state={dehydrate(queryClient)}>
+            <Suspense fallback={<div>Loading...</div>}>
+
       <CategoryTable/>
+            </Suspense>
+
       </HydrationBoundary>
     )
   }

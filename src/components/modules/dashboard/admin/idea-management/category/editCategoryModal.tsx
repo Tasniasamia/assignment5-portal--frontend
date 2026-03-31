@@ -36,7 +36,7 @@ export default function EditCategoryModal({
     enabled: open && !!category?.id,
   });
 
-  const currentCategory = categoryData?.data ?? category;
+  const currentCategory:any = categoryData?.data ?? category;
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: updateCategory,
@@ -79,7 +79,7 @@ export default function EditCategoryModal({
   }, [currentCategory]);
 
   return (
-    <Dialog open={open} onOpenChange={onClose} className="">
+    <Dialog open={open} onOpenChange={onClose} >
       <DialogContent className="sm:max-w-lg w-full rounded-xl !bg-white">
         <DialogHeader className="pb-2 border-b">
           <DialogTitle className="text-lg font-semibold">

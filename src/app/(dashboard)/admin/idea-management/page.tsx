@@ -1,4 +1,6 @@
 // import { getAllAdminIdeas } from "@/service/idea.service";
+export const dynamic = 'force-dynamic'; 
+
 import IdeaTable from "@/components/modules/dashboard/admin/idea-management/ideaTable";
 import { getAllCategory } from "@/service/idea.catetogory.service";
 import { getAllAdminIdeas } from "@/service/idea.service";
@@ -7,6 +9,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
+import { Suspense } from "react";
 // import IdeaTable from "@/components/modules/dashboard/admin/idea-management/idea/ideaTable";
 
 interface PageProps {
@@ -48,6 +51,8 @@ export default async function Page({ searchParams }: PageProps) {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+                <Suspense fallback={<div>Loading...</div>}>
+    
       <div className="space-y-4">
         <div>
           <h1 className="text-2xl font-bold">Idea Management</h1>
@@ -57,6 +62,7 @@ export default async function Page({ searchParams }: PageProps) {
         </div>
         <IdeaTable />
       </div>
+      </Suspense>
     </HydrationBoundary>
   );
 }

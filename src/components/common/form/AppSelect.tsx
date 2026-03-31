@@ -14,17 +14,26 @@ interface SelectOption {
   label: string;
   value: string;
 }
-
 interface AppSelectProps {
   label?: string;
   placeholder?: string;
   options: SelectOption[];
   value: string;
-  onChange: (value: string) => void;
+  onChange: (value: string | null) => void; // ✅ string → string | null
   required?: boolean;
   error?: string;
   disabled?: boolean;
 }
+// interface AppSelectProps {
+//   label?: string;
+//   placeholder?: string;
+//   options: SelectOption[];
+//   value: string;
+//   onChange: (value: string) => void;
+//   required?: boolean;
+//   error?: string;
+//   disabled?: boolean;
+// }
 
 export default function AppSelect({
   label,

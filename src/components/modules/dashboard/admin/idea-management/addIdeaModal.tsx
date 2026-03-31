@@ -139,8 +139,8 @@ const categoryOptions = categories.map((c: { id: string; name: string }) => ({
                  placeholder="Select category"
                  options={categoryOptions}
                  value={field.state.value}
-                 onChange={field.handleChange}
-                 required
+                 onChange={(val) => field.handleChange(val ?? "")} // ✅
+//                  required
                  error={field.state.meta.errors?.[0]}
                />
              )}
@@ -207,7 +207,7 @@ const categoryOptions = categories.map((c: { id: string; name: string }) => ({
               multiple={true}
               existingUrls={[]}
               onChange={(files) => setNewFiles(files)}
-              onDeleteExisting={() => {}}
+              // onDeleteExisting={() => {}}
             />
           </div>
 <form.Field name="isPublished">

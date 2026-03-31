@@ -158,7 +158,7 @@ console.log("categories",categories);
         placeholder="Select category"
         options={categoryOptions}
         value={field.state.value}
-        onChange={field.handleChange}
+                 onChange={(val) => field.handleChange(val ?? "")} // ✅
         required
         error={field.state.meta.errors?.[0]}
       />
@@ -201,9 +201,9 @@ console.log("categories",categories);
                 multiple={true}
                 existingUrls={existingUrls}
                 onChange={(files) => setNewFiles(files)}
-                onDeleteExisting={(url) =>
-                  setExistingUrls((prev) => prev.filter((u) => u !== url))
-                }
+                // onDeleteExisting={(url) =>
+                //   setExistingUrls((prev) => prev.filter((u) => u !== url))
+                // }
               />
             </div>
 <form.Field name="isPublished">
