@@ -40,6 +40,29 @@ export interface TIdeaQueryParams {
 [key: string]: string | number | undefined;
 }
 
+
+export const getAllIdeas = async (params: TIdeaQueryParams = {}) => {
+  const query = new URLSearchParams();
+  if (params.page) query.set("page", String(params.page));
+  if (params.limit) query.set("limit", String(params.limit));
+  if (params.searchTerm) query.set("searchTerm", params.searchTerm);
+  if (params.status) query.set("status", params.status);
+  if (params.categoryId) query.set("categoryId", params.categoryId);
+  if (params.sortBy) query.set("sortBy", params.sortBy);
+  if (params.sortOrder) query.set("sortOrder", params.sortOrder);
+console.log("query",query)
+  const response = await httpClient.get<{ data: TIdea[]; meta: any }>(
+    `/idea?${query.toString()}`
+  );
+  
+  if (!response.success) throw new Error("Failed to fetch ideas");
+  return response;
+};
+
+
+
+
+
 // ✅ GET ALL IDEAS (ADMIN)
 export const getAllAdminIdeas = async (params: TIdeaQueryParams = {}) => {
   const query = new URLSearchParams();
@@ -58,6 +81,36 @@ console.log("query",query)
   if (!response.success) throw new Error("Failed to fetch ideas");
   return response;
 };
+
+
+// ✅ GET ALL IDEAS (MEMBER)
+export const getAllRoleWiseIdeas = async (params: TIdeaQueryParams = {}) => {
+  const query = new URLSearchParams();
+  if (params.page) query.set("page", String(params.page));
+  if (params.limit) query.set("limit", String(params.limit));
+  if (params.searchTerm) query.set("searchTerm", params.searchTerm);
+  if (params.status) query.set("status", params.status);
+  if (params.categoryId) query.set("categoryId", params.categoryId);
+  if (params.sortBy) query.set("sortBy", params.sortBy);
+  if (params.sortOrder) query.set("sortOrder", params.sortOrder);
+console.log("query",query)
+  const response = await httpClient.get<{ data: TIdea[]; meta: any }>(
+    `/idea/roleWise?${query.toString()}`
+  );
+  
+  if (!response.success) throw new Error("Failed to fetch ideas");
+  return response;
+};
+
+
+
+
+
+
+
+
+
+
 
 // ✅ GET IDEA BY ID
 export const getIdeaById = async (id: string) => {

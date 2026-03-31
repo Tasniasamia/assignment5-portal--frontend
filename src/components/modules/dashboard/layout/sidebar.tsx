@@ -29,6 +29,7 @@ const adminNavItems: NavItem[] = [
 
 const memberNavItems: NavItem[] = [
   { label: "Dashboard",     href: "/member/dashboard",    icon: <LayoutDashboard size={16} /> },
+{label:"Idea",href:"/member/idea-mangement",   icon: <LigatureIcon size={16} /> },
 
 ];
 interface SidebarProps {

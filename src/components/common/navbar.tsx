@@ -28,7 +28,7 @@ import { useProfile } from "@/actions/user.action";
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "Ideas", href: "/ideas" },
+  { label: "Ideas", href: "/idea" },
   { label: "About Us", href: "/about" },
   { label: "Contact Us", href: "/contact" },
 ];
