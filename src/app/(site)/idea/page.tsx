@@ -29,7 +29,7 @@ export default async function Page({ searchParams }: PageProps) {
 
   const params = {
     page: Number(searchParams?.page ?? 1),
-    limit: Number(searchParams?.limit ?? 9),
+    limit: Number(searchParams?.limit ?? 6),
     searchTerm: searchParams?.searchTerm ?? "",
     categoryId: searchParams?.categoryId,
     type: searchParams?.type,

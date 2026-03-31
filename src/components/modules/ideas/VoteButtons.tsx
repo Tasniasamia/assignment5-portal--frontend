@@ -20,65 +20,17 @@ interface VoteButtonsProps {
 export default function VoteButtons({
   ideaId,
   initialData,
-  onAuthRequired,
+
 }: VoteButtonsProps) {
   const [data, setData] = useState<VoteData>(initialData);
   const [loading, setLoading] = useState(false);
 
   const isLoggedIn = () => {
-    if (typeof window === "undefined") return false;
-    return !!localStorage.getItem("token");
+   
   };
 
   const handleVote = async (type: "UPVOTE" | "DOWNVOTE") => {
-    if (!isLoggedIn()) {
-      onAuthRequired?.();
-      return;
-    }
-    setLoading(true);
-    try {
-      if (data.userVote === type) {
-        // toggle off — remove vote
-        await deleteVote(ideaId);
-        setData((prev) => ({
-          ...prev,
-          upvotes: type === "UPVOTE" ? prev.upvotes - 1 : prev.upvotes,
-          downvotes: type === "DOWNVOTE" ? prev.downvotes - 1 : prev.downvotes,
-          total: type === "UPVOTE" ? prev.total - 1 : prev.total + 1,
-          userVote: null,
-        }));
-      } else {
-        await castVote(ideaId, type);
-        const prev = data.userVote;
-        setData((d) => ({
-          ...d,
-          upvotes:
-            type === "UPVOTE"
-              ? d.upvotes + 1
-              : prev === "UPVOTE"
-              ? d.upvotes - 1
-              : d.upvotes,
-          downvotes:
-            type === "DOWNVOTE"
-              ? d.downvotes + 1
-              : prev === "DOWNVOTE"
-              ? d.downvotes - 1
-              : d.downvotes,
-          total:
-            type === "UPVOTE"
-              ? prev === "DOWNVOTE"
-                ? d.total + 2
-                : d.total + 1
-              : prev === "UPVOTE"
-              ? d.total - 2
-              : d.total - 1,
-          userVote: type,
-        }));
-      }
-    } catch (e) {
-      console.error(e);
-    }
-    setLoading(false);
+  
   };
 
   return (

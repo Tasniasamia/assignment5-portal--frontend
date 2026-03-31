@@ -6,24 +6,11 @@ import { getVoteCount } from "@/service/public.idea.service";
 import VoteButtons from "./VoteButtons";
 import CommentSection from "./CommentSection";
 import type { IIdea } from "./IdeaCard";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
-const timeAgo = (date: string) => {
-  const diff = Date.now() - new Date(date).getTime();
-  const m = Math.floor(diff / 60000);
-  if (m < 1) return "just now";
-  if (m < 60) return `${m}m ago`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
-  return `${Math.floor(h / 24)}d ago`;
-};
+dayjs.extend(relativeTime)
 
-const avatarInitials = (name = "") =>
-  name
-    .split(" ")
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2) || "?";
 
 interface IdeaDetailModalProps {
   idea: IIdea;
@@ -32,42 +19,15 @@ interface IdeaDetailModalProps {
 
 export default function IdeaDetailModal({ idea, onClose }: IdeaDetailModalProps) {
   const [imgIndex, setImgIndex] = useState(0);
-  const [voteData, setVoteData] = useState({
-    upvotes: idea._count?.votes || 0,
-    downvotes: 0,
-    total: 0,
-    userVote: (idea.userVote as "UPVOTE" | "DOWNVOTE" | null) || null,
-  });
-  const [voteLoading, setVoteLoading] = useState(true);
 
-  useEffect(() => {
-    getVoteCount(idea.id)
-      .then((d) => {
-        if (d) setVoteData(d);
-      })
-      .catch(console.error)
-      .finally(() => setVoteLoading(false));
-  }, [idea.id]);
 
-  // Close on backdrop click
+
+  // // Close on backdrop click
   const handleBackdrop = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) onClose();
   };
 
-  // Close on Escape
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [onClose]);
 
-  // Prevent body scroll
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
-  }, []);
 
   const images = idea.images || [];
 
@@ -113,15 +73,13 @@ export default function IdeaDetailModal({ idea, onClose }: IdeaDetailModalProps)
 
           <div className="flex items-center gap-3 mt-2">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white text-[9px] font-bold">
-                {avatarInitials(idea.author?.name)}
-              </div>
+          
               <span className="text-green-200 text-xs font-medium">
-                {idea.author?.name}
+                {idea?.author?.name}
               </span>
             </div>
             <span className="text-green-400 text-xs">•</span>
-            <span className="text-green-300 text-xs">{timeAgo(idea.createdAt)}</span>
+            <span className="text-green-300 text-xs">{dayjs(idea.createdAt).fromNow(true)}</span>
             <span className="text-green-400 text-xs">•</span>
             <span className="text-green-300 text-xs flex items-center gap-1">
               👁 {idea.viewCount}
@@ -129,11 +87,11 @@ export default function IdeaDetailModal({ idea, onClose }: IdeaDetailModalProps)
           </div>
         </div>
 
-        {/* ── Scrollable Body ── */}
+    
         <div className="flex-1 overflow-y-auto">
           <div className="px-6 py-5 space-y-5">
 
-            {/* Images */}
+          
             {images.length > 0 && (
               <div>
                 <img
@@ -161,23 +119,10 @@ export default function IdeaDetailModal({ idea, onClose }: IdeaDetailModalProps)
               </div>
             )}
 
-            {/* Vote Bar */}
-            <div className="flex items-center gap-4 p-4 bg-green-50 rounded-xl border border-green-100">
-              <span className="text-sm font-semibold text-green-800">
-                Cast your vote:
-              </span>
-              {voteLoading ? (
-                <div className="h-8 w-48 bg-green-100 rounded-full animate-pulse" />
-              ) : (
-                <VoteButtons
-                  ideaId={idea.id}
-                  initialData={voteData}
-                  onAuthRequired={() => alert("Please login to vote.")}
-                />
-              )}
-            </div>
+           
+      
 
-            {/* Problem & Solution */}
+      
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="bg-green-50 border border-green-100 rounded-xl p-4">
                 <p className="text-[10px] font-bold text-green-600 uppercase tracking-wide mb-2">
@@ -197,7 +142,7 @@ export default function IdeaDetailModal({ idea, onClose }: IdeaDetailModalProps)
               </div>
             </div>
 
-            {/* Description */}
+ 
             <div className="bg-gray-50 border border-gray-100 rounded-xl p-4">
               <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wide mb-2">
                 📄 Description
@@ -207,14 +152,11 @@ export default function IdeaDetailModal({ idea, onClose }: IdeaDetailModalProps)
               </p>
             </div>
 
-            {/* Divider */}
+     
             <div className="border-t border-green-100" />
 
-            {/* Comments */}
-            <CommentSection
-              ideaId={idea.id}
-              totalComments={idea._count?.comments || 0}
-            />
+        
+ 
           </div>
         </div>
       </div>

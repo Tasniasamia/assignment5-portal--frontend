@@ -1,22 +1,6 @@
 "use client";
 
-const timeAgo = (date: string) => {
-  const diff = Date.now() - new Date(date).getTime();
-  const m = Math.floor(diff / 60000);
-  if (m < 1) return "just now";
-  if (m < 60) return `${m}m ago`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
-  return `${Math.floor(h / 24)}d ago`;
-};
 
-const avatarInitials = (name = "") =>
-  name
-    .split(" ")
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2) || "?";
 
 export interface IIdea {
   id: string;
@@ -115,9 +99,11 @@ export default function IdeaCard({ idea, onClick }: IdeaCardProps) {
                 alt=""
               />
             ) : (
-              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-green-600 to-green-400 flex items-center justify-center text-white text-[9px] font-bold flex-shrink-0">
-                {avatarInitials(idea.author?.name)}
-              </div>
+           <img
+                src="default.jpg"
+                className="w-6 h-6 rounded-full object-cover"
+                alt="avatar"
+              />
             )}
             <span className="text-xs text-gray-500 truncate max-w-[80px]">
               {idea.author?.name}
