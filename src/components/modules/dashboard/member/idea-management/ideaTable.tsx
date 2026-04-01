@@ -12,6 +12,7 @@ import EditIdeaModal from "./editIdeaModal";
 import IdeaFilterPanel from "./ideaFilterPanel";
 import { getAllCategory } from "@/service/idea.catetogory.service";
 import { useSearchParams } from "next/navigation";
+import StatusUpdateModal from "../../admin/idea-management/statusUpdateModal";
 
 export default function IdeaTable() {
   const queryClient = useQueryClient();

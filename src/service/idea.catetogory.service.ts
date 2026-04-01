@@ -57,7 +57,7 @@ export const createCategory = async (payload: any) => {
 
 export const updateCategory = async ({ id, payload }: { id: string; payload: {name:string,description:string} }) => {
   try {
-    const response = await httpClient.put<any>(`/idea/category/${id}`, payload);
+    const response = await httpClient.patch<any>(`/idea/category/${id}`, payload);
     if (!response.success) throw new Error("Failed to update category");
     return response;
   } catch (error) {

@@ -1,12 +1,18 @@
 "use server";
 import { httpClient } from "@/lib/axios/httpClient";
 
-export const createPayment = async (formData: FormData) => {
-  try{
-  const response = await httpClient.post<{ideaId:string}>("/payments/initiate", formData);
-  return response;
-    } catch (error: any) {
-    const message = error?.response?.data?.message || error?.message || "Failed to payment for idea";
+export const createPayment = async (data: { ideaId: string }) => {
+  try {
+    const response = await httpClient.post<any>(
+      "/payments/initiate",
+      data
+    );
+    return response;
+  } catch (error: any) {
+    const message =
+      error?.response?.data?.message ||
+      error?.message ||
+      "Failed to payment for idea";
     throw new Error(message);
   }
 };

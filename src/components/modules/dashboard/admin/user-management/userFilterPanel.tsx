@@ -46,7 +46,7 @@ export default function UserFilterPanel() {
       {/* Status Filter */}
       <Select
         value={searchParams.get("status") ?? "all"}
-        onValueChange={(val) => updateParam("status", val)}
+        onValueChange={(val :any) => updateParam("status", val)}
       >
         <SelectTrigger className="w-[140px] h-9 bg-white text-sm">
           <SelectValue placeholder="All Status" />
@@ -63,7 +63,7 @@ export default function UserFilterPanel() {
       {/* Role Filter */}
       <Select
         value={searchParams.get("role") ?? "all"}
-        onValueChange={(val) => updateParam("role", val)}
+        onValueChange={(val:any) => updateParam("role", val)}
       >
         <SelectTrigger className="w-[130px] h-9 bg-white text-sm">
           <SelectValue placeholder="All Roles" />

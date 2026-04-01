@@ -18,11 +18,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
+import { toast } from "sonner";
 
 const LoginForm = ({ redirect }: { redirect?: string | object }) => {
   console.log("redirect", redirect);
   const queryClient = useQueryClient();
-  const [serverError, setServerError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const { mutateAsync, isPending } = useMutation<
@@ -43,26 +43,27 @@ const LoginForm = ({ redirect }: { redirect?: string | object }) => {
     },
     onSubmit: async ({ value }: { value: ILoginPayloadType }) => {
       try {
-        setServerError(null);
+        // setServerError(null);
     
         const loginResponse = await mutateAsync(value);
     
         if ("success" in loginResponse && !loginResponse.success) {
           console.log("coming here");
           console.log("loginResponse not success: ", loginResponse.message);
-          setServerError(loginResponse.message);
+          toast.error(loginResponse.message || "Login failed");
+          // setServerError(loginResponse.message);
           return;
         }
       } catch (error: unknown) {
         if (error && typeof error === "object" && "message" in error) {
           console.log("catch message", (error as { message?: string }).message);
-          setServerError(
+          toast.error(
             (error as { message?: string }).message ??
               "An unexpected error occurred",
           );
         } else {
           console.log("catch message", error);
-          setServerError("An unexpected error occurred");
+          toast.error("An unexpected error occurred");
         }
       }
     },
@@ -149,11 +150,7 @@ const LoginForm = ({ redirect }: { redirect?: string | object }) => {
               </Link>
             </div>
 
-            {serverError && (
-              <Alert>
-                <AlertDescription>{serverError}</AlertDescription>
-              </Alert>
-            )}
+          
 
             <form.Subscribe
               selector={(state) => [state.canSubmit, state.isSubmitting]}
