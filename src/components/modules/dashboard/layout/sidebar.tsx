@@ -10,6 +10,7 @@ import {
   HelpCircle, ChevronLeft, ChevronRight, LogOut, Leaf,
   LeafIcon,
   LigatureIcon,
+  User,
 } from "lucide-react";
 import { useLogout } from "@/actions/logout.action";
 
@@ -22,9 +23,10 @@ interface NavItem {
 
 const adminNavItems: NavItem[] = [
   { label: "Dashboard",     href: "/admin/dashboard",     icon: <LayoutDashboard size={16} /> },
+  {label:"User Management",href:"/admin/user-management",   icon: <User size={16} /> },
   { label: "Category",     href: "/admin/idea-management/category",     icon: <LeafIcon size={16} /> },
 {label:"Idea",href:"/admin/idea-management",   icon: <LigatureIcon size={16} /> },
-  { label: "Settings",      href: "/admin/settings",      icon: <Settings size={16} /> },
+  { label: "Settings",      href: "/my-profile",      icon: <Settings size={16} /> },
 ];
 
 const memberNavItems: NavItem[] = [
