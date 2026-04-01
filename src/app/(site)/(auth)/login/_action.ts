@@ -35,13 +35,8 @@ export const createLoginAction = async (payload: ILoginPayloadType,redirectURL:s
     console.log("user data",user);
     if (!user?.emailVerified) {
       redirect(`/verify-email?email=${user?.email}`);
-      // needPasswordChanges থাকলেও এখানে আসবে না
     }
-            
-      //   if(user?.needPasswordChanges){
-
-      //     redirect(`/reset-password?email=${user?.email}`);
-      // }
+    
     if (redirectURL && isValidRedirect(redirectURL, user.role)) {
       redirect(redirectURL);
     }
