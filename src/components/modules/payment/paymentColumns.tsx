@@ -68,7 +68,7 @@ export const paymentColumns: ColumnDef<TPayment>[] = [
     cell: ({ row }) =>
       row.original.invoiceUrl ? (
         
-          href={row.original.invoiceUrl}
+      <a    href={row.original.invoiceUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="text-xs text-blue-600 hover:underline"
