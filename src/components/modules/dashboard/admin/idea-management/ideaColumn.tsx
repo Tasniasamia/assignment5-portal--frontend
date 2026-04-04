@@ -47,12 +47,14 @@ export const ideaColumns: ColumnDef<TIdea>[] = [
     accessorKey: "author",
     header: "Author",
     enableSorting: false,
-    cell: ({ row }) => (
+    cell: ({ row }) => { 
+      console.log("author",row.original.author?.name)
+      return (
       <div className="text-sm">
         <p className="font-medium">{row.original.author?.name}</p>
         <p className="text-muted-foreground text-xs">{row.original.author?.email}</p>
       </div>
-    ),
+    )},
   },
   {
     id: "type",

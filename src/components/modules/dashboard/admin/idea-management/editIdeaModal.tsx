@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { getIdeaById, updateIdea, TIdea } from "@/service/idea.service";
 import { getAllCategory } from "@/service/idea.catetogory.service";
 import AppSelect from "@/components/common/form/AppSelect";
+import { useProfile } from "@/actions/user.action";
 
 interface EditIdeaModalProps {
   idea: TIdea;
@@ -38,6 +39,8 @@ export default function EditIdeaModal({ idea, open, onClose }: EditIdeaModalProp
   const [existingUrls, setExistingUrls] = useState<string[]>([]);
   const [ideaType, setIdeaType] = useState<"FREE" | "PAID">("FREE");
   const [uploadKey, setUploadKey] = useState(0);
+    const { data, isLoading:userLoading } = useProfile();
+    console.log("profile data",data);
 
   // ✅ fetch latest idea
   const { data: ideaData, isLoading } = useQuery({
@@ -224,7 +227,7 @@ console.log("categories",categories);
 </form.Field>
             <div className="flex justify-end gap-2 pt-1">
               <Button type="button" variant="outline" onClick={onClose} className="cursor-pointer">Cancel</Button>
-              <Button type="submit" variant="outline" disabled={isPending} className="cursor-pointer">
+              <Button type="submit" variant="outline" disabled={isPending || (idea?.authorId!=data?.id)} className="cursor-pointer">
                 {isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
                 Save Changes
               </Button>
