@@ -160,9 +160,14 @@ export const updateIdea = async ({ id, formData }: { id: string; formData: FormD
 
 // ✅ DELETE IDEA
 export const deleteIdea = async (id: string) => {
+  try{
   const response = await httpClient.delete<any>(`/idea/${id}`);
   if (!response.success) throw new Error("Failed to delete idea");
   return response;
+  } catch (error: any) {
+    const message = error?.response?.data?.message || error?.message || "Failed to update idea";
+    throw new Error(message);
+  }
 };
 
 // ✅ APPROVE IDEA

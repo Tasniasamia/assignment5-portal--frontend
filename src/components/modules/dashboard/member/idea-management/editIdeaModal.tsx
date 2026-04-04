@@ -108,13 +108,14 @@ console.log("current idea data",current);
 // ✅ reset form with fetched data
 useEffect(() => {
   if (current) {
+    console.log("current in useEffect", current);
     form.setFieldValue("title", current.title ?? "");
     form.setFieldValue("problemStatement", current.problemStatement ?? "");
     form.setFieldValue("proposedSolution", current.proposedSolution ?? "");
     form.setFieldValue("description", current.description ?? "");
     form.setFieldValue("categoryId", current.categoryId ?? "");
     form.setFieldValue("price", current.price ? String(current.price) : "");
-     form.setFieldValue("isPublished", current.isPublished ?? false);
+     form.setFieldValue("isPublished",current.isPublished);
     setIdeaType(current.type ?? "FREE");
     setExistingUrls(current.images ?? []);
   }
@@ -213,6 +214,7 @@ console.log("categories",categories);
         type="checkbox"
         id="isPublished"
         checked={field.state.value}
+       
         onChange={(e) => field.handleChange(e.target.checked)}
         className="h-4 w-4 rounded border-gray-300 accent-primary cursor-pointer"
       />
